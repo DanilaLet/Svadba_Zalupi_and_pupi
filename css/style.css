@@ -96,13 +96,14 @@ img {
 
 .loading-text {
     position: relative;
+    z-index: 1;
     color: #fff;
     font-size: 26px;
     font-family: var(--font-serif);
     text-align: center;
-    z-index: 1;
     animation: pulse 2s ease-in-out infinite;
     text-shadow: 2px 2px 10px rgba(0,0,0,0.4);
+    padding: 0 20px;
 }
 
 .loading-text span {
@@ -139,12 +140,6 @@ img {
 .section-wine {
     background: linear-gradient(135deg, var(--wine-dark) 0%, var(--wine) 50%, var(--wine-light) 100%);
     color: #fff;
-}
-
-/* Плавные переходы между секциями */
-.section-white + .section-cream,
-.section-cream + .section-white {
-    /* Плавный переход за счёт одинаковых отступов */
 }
 
 .container {
@@ -195,6 +190,16 @@ img {
     margin-bottom: 24px;
     line-height: 1.3;
     text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+}
+
+.text-block-p {
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+}
+
+.text-block-p strong {
+    color: var(--wine);
 }
 
 /* ============================================
@@ -293,6 +298,7 @@ img {
     cursor: pointer;
     border: none;
     transition: all var(--transition);
+    text-align: center;
 }
 
 .btn-calendar {
@@ -323,6 +329,15 @@ img {
     background: var(--wine);
     color: #fff;
     box-shadow: 0 4px 20px rgba(139,0,0,0.25);
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.btn-map small {
+    font-size: 12px;
+    opacity: 0.8;
+    font-weight: 400;
 }
 
 .btn-map:hover {
@@ -374,12 +389,20 @@ img {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+}
+
+.music-label {
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-light);
+    margin-bottom: 4px;
 }
 
 .visualizer {
     display: flex;
     align-items: flex-end;
+    justify-content: center;
     gap: 3px;
     height: 55px;
 }
@@ -603,6 +626,7 @@ img {
     color: var(--wine);
     min-width: 60px;
     font-family: var(--font-serif);
+    flex-shrink: 0;
 }
 
 .desc {
@@ -660,6 +684,7 @@ img {
     padding: 24px;
     box-shadow: var(--shadow);
     user-select: none;
+    -webkit-user-select: none;
 }
 
 .game-score {
@@ -690,6 +715,7 @@ img {
     flex-wrap: wrap;
     gap: 5px;
     justify-content: center;
+    align-items: center;
     min-height: 40px;
     margin-top: 14px;
     font-size: 28px;
@@ -846,6 +872,7 @@ img {
     width: 20px;
     height: 20px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .success-msg {
@@ -893,6 +920,7 @@ img {
     border-radius: 14px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
+    line-height: 1;
 }
 
 .countdown-num.pop {
@@ -919,17 +947,12 @@ img {
     font-size: 38px;
     color: var(--gold);
     font-weight: 300;
+    line-height: 1;
 }
 
 /* ============================================
    ФИНАЛ
    ============================================ */
-.final-text {
-    font-size: 18px;
-    line-height: 1.8;
-    margin-bottom: 20px;
-}
-
 .highlight-box {
     background: rgba(139,0,0,0.04);
     padding: 20px;
@@ -938,6 +961,7 @@ img {
     margin: 28px 0;
     font-size: 16px;
     position: relative;
+    line-height: 1.7;
 }
 
 .highlight-box::before {
@@ -952,6 +976,11 @@ img {
     margin-top: 36px;
     padding-top: 28px;
     border-top: 2px solid var(--cream-dark);
+}
+
+.signature p {
+    font-size: 18px;
+    color: var(--text-light);
 }
 
 .signature-names {
@@ -987,18 +1016,18 @@ img {
 /* ============================================
    АДАПТИВНОСТЬ
    ============================================ */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .section {
-        padding: 50px 16px;
+        padding: 50px 20px;
     }
     
     .hero-title {
-        font-size: 38px;
+        font-size: 40px;
     }
     
     .hero-date {
-        font-size: 18px;
-        letter-spacing: 3px;
+        font-size: 20px;
+        letter-spacing: 4px;
     }
     
     .section-title,
@@ -1007,16 +1036,16 @@ img {
     }
     
     .countdown-num {
-        font-size: 34px;
-        padding: 10px 14px;
+        font-size: 36px;
+        padding: 12px 14px;
     }
     
     .countdown-colon {
-        font-size: 26px;
+        font-size: 28px;
     }
     
     .countdown-block {
-        min-width: 60px;
+        min-width: 65px;
     }
     
     .countdown-lbl {
@@ -1025,7 +1054,7 @@ img {
     }
     
     .game-field {
-        height: 200px;
+        height: 220px;
     }
     
     .flower-item {
@@ -1033,16 +1062,16 @@ img {
     }
     
     .calendar {
-        max-width: 300px;
-        padding: 18px;
-    }
-    
-    .rsvp-form {
+        max-width: 320px;
         padding: 20px;
     }
     
+    .rsvp-form {
+        padding: 24px 20px;
+    }
+    
     .btn {
-        padding: 13px 24px;
+        padding: 14px 26px;
         font-size: 15px;
     }
     
@@ -1052,13 +1081,26 @@ img {
     }
     
     .signature-names {
-        font-size: 32px;
+        font-size: 34px;
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
+    .section {
+        padding: 40px 16px;
+    }
+    
+    .hero-overlay {
+        padding: 60px 16px 30px;
+    }
+    
     .hero-title {
-        font-size: 30px;
+        font-size: 32px;
+    }
+    
+    .hero-date {
+        font-size: 17px;
+        letter-spacing: 3px;
     }
     
     .section-title,
@@ -1066,17 +1108,25 @@ img {
         font-size: 24px;
     }
     
+    .text-block-p {
+        font-size: 16px;
+    }
+    
+    .countdown {
+        gap: 8px;
+    }
+    
     .countdown-num {
-        font-size: 26px;
-        padding: 8px 10px;
+        font-size: 28px;
+        padding: 10px 12px;
     }
     
     .countdown-colon {
-        font-size: 20px;
+        font-size: 22px;
     }
     
     .countdown-block {
-        min-width: 50px;
+        min-width: 55px;
     }
     
     .countdown-lbl {
@@ -1085,11 +1135,70 @@ img {
     }
     
     .game-field {
-        height: 170px;
+        height: 180px;
     }
     
     .flower-item {
-        font-size: 24px;
+        font-size: 26px;
+    }
+    
+    .calendar {
+        max-width: 280px;
+        padding: 16px;
+    }
+    
+    .calendar-grid {
+        gap: 4px;
+        font-size: 13px;
+    }
+    
+    .calendar-grid span {
+        padding: 7px 3px;
+    }
+    
+    .day-wedding {
+        transform: scale(1.2);
+    }
+    
+    .timeline-row {
+        gap: 12px;
+    }
+    
+    .time {
+        font-size: 17px;
+        min-width: 50px;
+    }
+    
+    .desc {
+        font-size: 14px;
+    }
+    
+    .color-swatch {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .rsvp-form {
+        padding: 20px 16px;
+    }
+    
+    .btn {
+        padding: 12px 22px;
+        font-size: 14px;
+    }
+    
+    .btn-submit {
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 15px;
+    }
+    
+    .signature-names {
+        font-size: 28px;
+    }
+    
+    .hero-image {
+        height: 100vh;
     }
 }
 
@@ -1097,10 +1206,11 @@ img {
    УТИЛИТЫ
    ============================================ */
 .text-small {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--text-light);
     margin-top: 10px;
     font-style: italic;
+    line-height: 1.6;
 }
 
 .text-center {
