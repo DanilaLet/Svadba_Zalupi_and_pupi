@@ -1,56 +1,56 @@
 /* ============================================
    main.js - Свадьба Маши и Семёна
+   ВСЕ ФИШКИ В ОДНОМ ФАЙЛЕ
    ============================================ */
 
-// Ждём загрузки DOM
 document.addEventListener('DOMContentLoaded', function() {
     
     // Инициализация всех функций
     initPreloader();
-    initAudioPlayer();
-    initSmoothScroll();
-    initCountdown();
-    initGuestForm();
+    initThemeSwitcher();
+    initParallax();
+    initMusicPlayer();
+    initBouquetGame();
     initCalendarAnimation();
-    initScrollAnimations();
+    initCountdown();
+    initFirework();
+    initColorPalette();
+    initMapAnimation();
+    initGuestForm();
+    initSmoothScroll();
+    initConsoleEasterEgg();
     
 });
 
 /* ============================================
-   ПРЕЛОАДЕР
+   1. ПРЕЛОАДЕР
    ============================================ */
 function initPreloader() {
     const container = document.querySelector('.hearts');
     const preloader = document.getElementById('preloader');
     
-    // Создаём 60 сердечек (больше = красивее)
     if (container) {
-        const heartEmojis = ['♥️', '❤️', '💕', '💗', '💖', '💝'];
+        const heartEmojis = ['♥️', '❤️', '💕', '💗', '💖', '💝', '🩷', '💘'];
         
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 70; i++) {
             const heart = document.createElement('div');
             heart.classList.add('heart');
             
-            // Случайный смайлик сердечка
             heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-            
-            // Случайные позиции и размеры
             heart.style.left = Math.random() * 100 + '%';
             heart.style.top = Math.random() * 100 + '%';
-            heart.style.fontSize = (14 + Math.random() * 28) + 'px';
+            heart.style.fontSize = (12 + Math.random() * 30) + 'px';
             heart.style.animationDelay = Math.random() * 5 + 's';
-            heart.style.animationDuration = (3 + Math.random() * 5) + 's';
-            heart.style.opacity = Math.random() * 0.5 + 0.3;
+            heart.style.animationDuration = (3 + Math.random() * 6) + 's';
+            heart.style.opacity = Math.random() * 0.6 + 0.2;
             
             container.appendChild(heart);
         }
     }
     
-    // Скрываем прелоадер через 4 секунды
     if (preloader) {
         setTimeout(() => {
             preloader.classList.add('fade-out');
-            
             setTimeout(() => {
                 preloader.style.display = 'none';
             }, 1000);
@@ -59,65 +59,329 @@ function initPreloader() {
 }
 
 /* ============================================
-   АУДИО ПЛЕЕР (если будет музыка)
+   2. ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ (День/Вечер)
    ============================================ */
-function initAudioPlayer() {
-    // Если в будущем добавите музыку, раскомментируйте:
-    /*
-    const audio = document.getElementById('audio');
-    const playBtn = document.getElementById('playBtn');
-    const playIcon = document.querySelector('.play-icon');
+function initThemeSwitcher() {
+    const switchBtn = document.getElementById('themeSwitch');
+    const themeIcon = switchBtn.querySelector('.theme-icon');
+    const themeLabel = switchBtn.querySelector('.theme-label');
+    const html = document.documentElement;
     
-    if (!audio || !playBtn) return;
+    // Проверяем сохранённую тему
+    const savedTheme = localStorage.getItem('wedding-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
     
-    playBtn.addEventListener('click', function() {
-        if (audio.paused) {
-            audio.play().then(() => {
-                playIcon.textContent = '⏸';
-            }).catch(error => {
-                console.log('Нажмите ещё раз для музыки');
-            });
-        } else {
-            audio.pause();
-            playIcon.textContent = '▶';
-        }
+    switchBtn.addEventListener('click', () => {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('wedding-theme', newTheme);
+        updateThemeButton(newTheme);
+        
+        // Микро-анимация переключения
+        switchBtn.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            switchBtn.style.transform = 'scale(1)';
+        }, 200);
     });
-    */
+    
+    function updateThemeButton(theme) {
+        if (theme === 'dark') {
+            themeIcon.textContent = '☀️';
+            themeLabel.textContent = 'День';
+        } else {
+            themeIcon.textContent = '🌙';
+            themeLabel.textContent = 'Вечер';
+        }
+    }
 }
 
 /* ============================================
-   ПЛАВНЫЙ СКРОЛЛ
+   3. ПАРАЛЛАКС-ЭФФЕКТ
    ============================================ */
-function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+function initParallax() {
+    const parallaxSections = document.querySelectorAll('.parallax-section');
+    
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        
+        parallaxSections.forEach(section => {
+            const speed = section.getAttribute('data-parallax') || 0.3;
+            const yPos = -(scrolled * speed);
+            section.style.backgroundPositionY = `calc(50% + ${yPos}px)`;
         });
     });
 }
 
 /* ============================================
-   ТАЙМЕР ОБРАТНОГО ОТСЧЕТА
+   4. МУЗЫКАЛЬНЫЙ ПЛЕЕР С ВИЗУАЛИЗАЦИЕЙ
+   ============================================ */
+function initMusicPlayer() {
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const musicIcon = playBtn.querySelector('.music-icon');
+    const musicText = playBtn.querySelector('.music-text');
+    const visualizer = document.getElementById('visualizer');
+    
+    if (!audio || !playBtn) return;
+    
+    let isPlaying = false;
+    
+    playBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            audio.pause();
+            musicIcon.textContent = '🎵';
+            musicText.textContent = 'Включить музыку';
+            playBtn.classList.remove('playing');
+            visualizer.classList.remove('playing');
+            isPlaying = false;
+        } else {
+            audio.play().then(() => {
+                musicIcon.textContent = '🎶';
+                musicText.textContent = 'Выключить музыку';
+                playBtn.classList.add('playing');
+                visualizer.classList.add('playing');
+                isPlaying = true;
+            }).catch(err => {
+                console.log('Автовоспроизведение заблокировано браузером. Нажмите ещё раз.');
+                alert('Нажмите кнопку ещё раз, чтобы включить музыку 🎵');
+            });
+        }
+    });
+    
+    // Синхронизация визуализации с реальной громкостью (по возможности)
+    if (audio) {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            
+            analyser.fftSize = 64;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            function updateVisualizer() {
+                if (!isPlaying) return;
+                
+                analyser.getByteFrequencyData(dataArray);
+                const bars = visualizer.querySelectorAll('.bar');
+                
+                bars.forEach((bar, index) => {
+                    const value = dataArray[index] || 0;
+                    const height = (value / 255) * 80;
+                    bar.style.height = Math.max(5, height) + 'px';
+                });
+                
+                requestAnimationFrame(updateVisualizer);
+            }
+            
+            audio.addEventListener('play', () => {
+                audioContext.resume();
+                updateVisualizer();
+            });
+        } catch (e) {
+            console.log('Web Audio API не поддерживается, используем CSS-анимацию');
+        }
+    }
+}
+
+/* ============================================
+   5. МИНИ-ИГРА "СОБЕРИ БУКЕТ"
+   ============================================ */
+function initBouquetGame() {
+    const gameArea = document.getElementById('gameArea');
+    const scoreDisplay = document.getElementById('score');
+    const bouquetContainer = document.getElementById('bouquet');
+    const resetBtn = document.getElementById('resetGame');
+    
+    if (!gameArea) return;
+    
+    let score = 0;
+    let isGameActive = true;
+    const flowers = ['🌸', '🌺', '🌷', '🥀', '💐', '🌻', '🌼', '🪷', '🌹', '💮'];
+    let gameInterval;
+    
+    function startGame() {
+        score = 0;
+        isGameActive = true;
+        scoreDisplay.textContent = '0';
+        bouquetContainer.innerHTML = '';
+        
+        gameInterval = setInterval(() => {
+            if (!isGameActive) return;
+            createFlower();
+        }, 600);
+    }
+    
+    function createFlower() {
+        const flower = document.createElement('div');
+        flower.className = 'flying-flower';
+        flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+        flower.style.left = Math.random() * 80 + 10 + '%';
+        flower.style.top = '-50px';
+        flower.style.animationDuration = (3 + Math.random() * 4) + 's';
+        
+        flower.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (!isGameActive) return;
+            
+            score += 10;
+            scoreDisplay.textContent = score;
+            
+            // Добавляем цветок в букет
+            const bouquetFlower = document.createElement('span');
+            bouquetFlower.textContent = this.textContent;
+            bouquetFlower.style.animation = 'popIn 0.3s ease';
+            bouquetContainer.appendChild(bouquetFlower);
+            
+            // Эффект при сборе
+            this.style.transform = 'scale(2)';
+            this.style.opacity = '0';
+            this.style.transition = 'all 0.2s ease';
+            
+            // Показываем +10
+            showFloatingScore(this, '+10');
+            
+            setTimeout(() => this.remove(), 200);
+            
+            // Проверка на рекорд
+            if (score % 100 === 0 && score > 0) {
+                showBonusMessage();
+            }
+        });
+        
+        gameArea.appendChild(flower);
+        
+        // Удаляем цветок после падения
+        setTimeout(() => {
+            if (flower.parentNode) {
+                flower.remove();
+            }
+        }, 7000);
+    }
+    
+    function showFloatingScore(element, text) {
+        const floater = document.createElement('div');
+        floater.textContent = text;
+        floater.style.cssText = `
+            position: absolute;
+            left: ${element.style.left};
+            top: ${element.style.top};
+            color: var(--wine);
+            font-weight: 700;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp 1s ease forwards;
+            z-index: 10;
+        `;
+        gameArea.appendChild(floater);
+        setTimeout(() => floater.remove(), 1000);
+    }
+    
+    function showBonusMessage() {
+        const messages = [
+            '🔥 Шикарный букет!',
+            '⭐ Молодожёны в восторге!',
+            '💝 Романтика зашкаливает!',
+            '🎉 Свадебный букет чемпиона!'
+        ];
+        
+        const bonus = document.createElement('div');
+        bonus.textContent = messages[Math.floor(Math.random() * messages.length)];
+        bonus.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--wine);
+            animation: bonusPop 1.5s ease forwards;
+            pointer-events: none;
+            z-index: 20;
+            text-align: center;
+        `;
+        gameArea.appendChild(bonus);
+        setTimeout(() => bonus.remove(), 1500);
+    }
+    
+    // Добавляем анимации
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        @keyframes floatUp {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-50px); }
+        }
+        @keyframes bonusPop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+        }
+    `;
+    document.head.appendChild(styleSheet);
+    
+    resetBtn.addEventListener('click', () => {
+        // Очищаем все цветы
+        const allFlowers = gameArea.querySelectorAll('.flying-flower');
+        allFlowers.forEach(f => f.remove());
+        
+        // Перезапускаем игру
+        clearInterval(gameInterval);
+        startGame();
+    });
+    
+    // Обработка клика по игровому полю (мимо цветов) = промах
+    gameArea.addEventListener('click', function(e) {
+        if (e.target === gameArea && isGameActive) {
+            // Маленький штраф за промах
+            score = Math.max(0, score - 5);
+            scoreDisplay.textContent = score;
+        }
+    });
+    
+    // Запускаем игру
+    startGame();
+}
+
+/* ============================================
+   6. АНИМАЦИЯ КАЛЕНДАРЯ
+   ============================================ */
+function initCalendarAnimation() {
+    const weddingDay = document.querySelector('.calendar-wedding-day');
+    
+    if (!weddingDay) return;
+    
+    // Конфетти при клике на дату
+    weddingDay.addEventListener('click', function(e) {
+        createConfetti(e.clientX, e.clientY, 15);
+    });
+    
+    // Эффект при наведении
+    weddingDay.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.4)';
+        this.style.transition = 'transform 0.3s ease';
+    });
+    
+    weddingDay.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1.3)';
+    });
+}
+
+/* ============================================
+   7. ТАЙМЕР ОБРАТНОГО ОТСЧЕТА
    ============================================ */
 function initCountdown() {
-    // Устанавливаем дату свадьбы: 6 сентября 2026 года
     const weddingDate = new Date('2026-09-06T15:00:00').getTime();
     
     function animateChange(element, newValue) {
         if (!element) return;
-        
-        // Если значение не изменилось, не анимируем
         if (element.textContent === newValue) return;
         
         element.classList.add('animate');
-        
         setTimeout(() => {
             element.textContent = newValue;
             element.classList.remove('animate');
@@ -134,50 +398,249 @@ function initCountdown() {
         const secondsElement = document.getElementById('seconds');
         const timerContainer = document.getElementById('timer');
         
-        // Если дата прошла
         if (diff <= 0) {
             if (timerContainer) {
                 timerContainer.innerHTML = `
                     <div style="
-                        font-size: 42px; 
+                        font-size: 48px; 
                         font-weight: 700; 
                         text-align: center; 
                         width: 100%;
-                        color: var(--wine);
+                        background: var(--gradient-main);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
                         animation: pulse 2s infinite;
                     ">
-                        СЕГОДНЯ! 🎉
+                        СЕГОДНЯ! 🎉💍
                     </div>`;
             }
             return;
         }
         
-        // Вычисляем значения
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
         
-        // Форматируем с ведущими нулями
-        const daysStr = String(days).padStart(2, '0');
-        const hoursStr = String(hours).padStart(2, '0');
-        const minutesStr = String(minutes).padStart(2, '0');
-        const secondsStr = String(seconds).padStart(2, '0');
-        
-        // Обновляем значения с анимацией
-        animateChange(daysElement, daysStr);
-        animateChange(hoursElement, hoursStr);
-        animateChange(minutesElement, minutesStr);
-        animateChange(secondsElement, secondsStr);
+        animateChange(daysElement, String(days).padStart(2, '0'));
+        animateChange(hoursElement, String(hours).padStart(2, '0'));
+        animateChange(minutesElement, String(minutes).padStart(2, '0'));
+        animateChange(secondsElement, String(seconds).padStart(2, '0'));
     }
     
-    // Запускаем таймер
     updateTimer();
     setInterval(updateTimer, 1000);
 }
 
 /* ============================================
-   ФОРМА ГОСТЯ (RSVP)
+   8. ФЕЙЕРВЕРК ПРИ КЛИКЕ НА ТАЙМЕР
+   ============================================ */
+function initFirework() {
+    const countdownSection = document.querySelector('.countdown-section');
+    const fireworkContainer = document.getElementById('fireworkContainer');
+    
+    if (!countdownSection || !fireworkContainer) return;
+    
+    countdownSection.addEventListener('click', function(e) {
+        const x = e.clientX;
+        const y = e.clientY;
+        createFirework(x, y);
+    });
+    
+    // Для мобильных - по центру экрана
+    countdownSection.addEventListener('touchstart', function(e) {
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight / 2;
+        createFirework(x, y);
+    });
+}
+
+function createFirework(x, y) {
+    const colors = [
+        '#FF6B6B', '#FF8E8E', '#FFD93D', '#FFE66D',
+        '#6BCB77', '#8FD99A', '#4D96FF', '#79B4FF',
+        '#FF69B4', '#FFB6C1', '#C9A96E', '#E8D5A3',
+        '#8B0000', '#C41E3A', '#FF4500', '#FF6347'
+    ];
+    
+    const particleCount = 40;
+    const container = document.getElementById('fireworkContainer');
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const velocity = 50 + Math.random() * 150;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = 3 + Math.random() * 8;
+        
+        particle.style.cssText = `
+            left: ${x}px;
+            top: ${y}px;
+            width: ${size}px;
+            height: ${size}px;
+            background: ${color};
+            --tx: ${tx}px;
+            --ty: ${ty}px;
+            box-shadow: 0 0 ${size * 2}px ${color};
+        `;
+        
+        container.appendChild(particle);
+        
+        setTimeout(() => {
+            particle.remove();
+        }, 1500);
+    }
+    
+    // Дополнительные искры
+    setTimeout(() => {
+        for (let i = 0; i < 20; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'firework-particle';
+            
+            const tx = (Math.random() - 0.5) * 200;
+            const ty = (Math.random() - 0.5) * 200;
+            
+            spark.style.cssText = `
+                left: ${x}px;
+                top: ${y}px;
+                width: 4px;
+                height: 4px;
+                background: #FFD700;
+                --tx: ${tx}px;
+                --ty: ${ty}px;
+                box-shadow: 0 0 10px #FFD700;
+            `;
+            
+            container.appendChild(spark);
+            setTimeout(() => spark.remove(), 1000);
+        }
+    }, 200);
+}
+
+function createConfetti(x, y, count) {
+    const emojis = ['🎉', '💝', '✨', '💕', '🎊', '💍', '🥂', '🎀'];
+    
+    for (let i = 0; i < count; i++) {
+        const confetti = document.createElement('div');
+        confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        confetti.style.cssText = `
+            position: fixed;
+            left: ${x}px;
+            top: ${y}px;
+            font-size: ${16 + Math.random() * 20}px;
+            pointer-events: none;
+            z-index: 99999;
+            transition: all 1.5s ease-out;
+            opacity: 1;
+        `;
+        
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => {
+            confetti.style.transform = `translate(${(Math.random() - 0.5) * 300}px, ${-(Math.random() * 200 + 100)}px) rotate(${Math.random() * 720}deg)`;
+            confetti.style.opacity = '0';
+        }, 10);
+        
+        setTimeout(() => confetti.remove(), 1500);
+    }
+}
+
+/* ============================================
+   9. ГЕНЕРАТОР ЦВЕТОВОЙ ПАЛИТРЫ
+   ============================================ */
+function initColorPalette() {
+    const colorCircles = document.querySelectorAll('.color-circle');
+    const suggestion = document.getElementById('colorSuggestion');
+    
+    const suggestions = {
+        'Бордовый': '👗 Идеально для вечернего платья в пол или элегантного костюма с бабочкой',
+        'Винный': '👔 Шикарный цвет для классического образа. Добавьте золотые аксессуары!',
+        'Розовый': '🌸 Нежный образ для подружек невесты или романтичных гостей',
+        'Рубиновый': '💎 Роскошный глубокий оттенок. Подойдёт для самых стильных гостей',
+        'Марсала': '🍷 Трендовый оттенок. Будете выглядеть как звезда красной дорожки!'
+    };
+    
+    colorCircles.forEach(circle => {
+        circle.addEventListener('click', function() {
+            const colorName = this.getAttribute('data-color');
+            const colorHex = this.style.background;
+            
+            // Подсветка выбранного
+            colorCircles.forEach(c => c.style.transform = 'scale(1)');
+            this.style.transform = 'scale(1.3)';
+            
+            // Показываем подсказку
+            suggestion.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background: ${colorHex};
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    "></div>
+                    <div style="text-align: left;">
+                        <strong>${colorName}</strong><br>
+                        <span style="font-size: 14px;">${suggestions[colorName]}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Маленький взрыв конфетти
+            const rect = this.getBoundingClientRect();
+            createConfetti(rect.left + rect.width/2, rect.top + rect.height/2, 8);
+        });
+    });
+}
+
+/* ============================================
+   10. АНИМИРОВАННЫЙ МАРШРУТ НА КАРТЕ
+   ============================================ */
+function initMapAnimation() {
+    const mapContainer = document.getElementById('mapContainer');
+    
+    if (!mapContainer) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                mapContainer.classList.add('animate');
+                
+                // Запускаем анимацию машинки
+                const routeLine = mapContainer.querySelector('.route-line');
+                if (routeLine) {
+                    routeLine.style.setProperty('--animate', 'true');
+                }
+            }
+        });
+    }, {
+        threshold: 0.3
+    });
+    
+    observer.observe(mapContainer);
+    
+    // Добавляем эффект пульсации пина при клике
+    const mapPin = mapContainer.querySelector('.map-pin');
+    if (mapPin) {
+        mapPin.addEventListener('click', function() {
+            this.style.animation = 'none';
+            this.offsetHeight; // reflow
+            this.style.animation = 'mapPinBounce 0.5s ease 3';
+            
+            setTimeout(() => {
+                this.style.animation = 'mapPinBounce 2s infinite';
+            }, 1500);
+        });
+    }
+}
+
+/* ============================================
+   11. ФОРМА ГОСТЯ (RSVP) С WHATSAPP
    ============================================ */
 function initGuestForm() {
     const form = document.getElementById('guestForm');
@@ -189,7 +652,6 @@ function initGuestForm() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Получаем данные формы
         const nameInput = form.querySelector('input[name="name"]');
         const phoneInput = form.querySelector('input[name="phone"]');
         const presenceInput = form.querySelector('input[name="presence"]:checked');
@@ -198,14 +660,14 @@ function initGuestForm() {
         
         // Валидация
         if (!nameInput || !nameInput.value.trim()) {
+            shakeElement(nameInput);
             alert('Пожалуйста, введите ваше ФИО 🙏');
-            nameInput.focus();
             return false;
         }
         
         if (!phoneInput || !phoneInput.value.trim()) {
+            shakeElement(phoneInput);
             alert('Пожалуйста, введите номер телефона 📱');
-            phoneInput.focus();
             return false;
         }
         
@@ -214,13 +676,13 @@ function initGuestForm() {
             return false;
         }
         
-        // Блокируем кнопку на время отправки
+        // Блокируем кнопку
         if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.textContent = 'ОТПРАВЛЯЕТСЯ...';
         }
         
-        // Формируем сообщение
+        // Формируем сообщение для WhatsApp
         const message = encodeURIComponent(
             `🎉 *АНКЕТА ГОСТЯ*\n\n` +
             `👤 *ФИО:* ${nameInput.value.trim()}\n` +
@@ -228,204 +690,144 @@ function initGuestForm() {
             `✅ *Присутствие:* ${presenceInput.value}\n` +
             (childrenInput.value.trim() ? `👶 *Дети:* ${childrenInput.value.trim()}\n` : '') +
             (wishesInput.value.trim() ? `💝 *Пожелания:* ${wishesInput.value.trim()}\n` : '') +
-            `\n---\n📅 Дата отправки: ${new Date().toLocaleDateString('ru-RU')}`
+            `\n---\n📅 Отправлено: ${new Date().toLocaleDateString('ru-RU')}\n` +
+            `💍 Свадьба Маши и Семёна | 6 сентября 2026`
         );
         
-        // Открываем WhatsApp с сообщением
-        // ЗАМЕНИТЕ НОМЕР НА ВАШ:
-        const phoneNumber = '79991234567'; // Укажите ваш номер для WhatsApp
+        // ЗАМЕНИТЕ НА ВАШ НОМЕР WHATSAPP:
+        const phoneNumber = '79991234567';
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
         
-        // Показываем сообщение об успехе
         setTimeout(() => {
             form.style.display = 'none';
             if (successMessage) {
                 successMessage.style.display = 'block';
             }
             
-            // Открываем WhatsApp в новой вкладке
+            // Конфетти успеха
+            createConfetti(window.innerWidth / 2, window.innerHeight / 2, 25);
+            
+            // Открываем WhatsApp
             window.open(whatsappUrl, '_blank');
             
-            // Разблокируем кнопку
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'ОТПРАВИТЬ';
             }
-        }, 1000);
+        }, 800);
         
         return false;
     });
 }
 
-/* ============================================
-   АНИМАЦИЯ КАЛЕНДАРЯ
-   ============================================ */
-function initCalendarAnimation() {
-    const weddingDay = document.querySelector('.calendar-wedding-day');
-    
-    if (!weddingDay) return;
-    
-    // Добавляем эффект пульсации при наведении
-    weddingDay.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.3)';
-        this.style.transition = 'transform 0.3s ease';
-    });
-    
-    weddingDay.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1.2)';
-    });
-    
-    // Добавляем конфетти при клике на дату (шутка)
-    weddingDay.addEventListener('click', function() {
-        this.style.transform = 'scale(1.5)';
-        setTimeout(() => {
-            this.style.transform = 'scale(1.2)';
-        }, 200);
-        
-        // Можно добавить реальный эффект конфетти
-        createMiniConfetti(this);
-    });
+function shakeElement(element) {
+    element.style.animation = 'shake 0.5s ease';
+    element.style.borderColor = 'red';
+    setTimeout(() => {
+        element.style.animation = '';
+        element.style.borderColor = '';
+    }, 500);
 }
 
-/* ============================================
-   МИНИ-КОНФЕТТИ (для календаря)
-   ============================================ */
-function createMiniConfetti(element) {
-    const confettiEmojis = ['🎉', '💝', '✨', '💕', '🎊', '💍'];
-    const rect = element.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    for (let i = 0; i < 8; i++) {
-        const confetti = document.createElement('div');
-        confetti.textContent = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
-        confetti.style.cssText = `
-            position: fixed;
-            left: ${centerX}px;
-            top: ${centerY}px;
-            font-size: 20px;
-            pointer-events: none;
-            z-index: 99999;
-            transition: all 1s ease-out;
-            opacity: 1;
-        `;
-        
-        document.body.appendChild(confetti);
-        
-        // Анимируем разлёт
-        setTimeout(() => {
-            confetti.style.transform = `translate(${(Math.random() - 0.5) * 200}px, ${-(Math.random() * 150 + 50)}px) rotate(${Math.random() * 720}deg)`;
-            confetti.style.opacity = '0';
-        }, 10);
-        
-        // Удаляем после анимации
-        setTimeout(() => {
-            confetti.remove();
-        }, 1000);
+// Добавляем анимацию shake
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
     }
-}
+`;
+document.head.appendChild(shakeStyle);
 
 /* ============================================
-   АНИМАЦИИ ПРИ СКРОЛЛЕ
+   12. ПЛАВНЫЙ СКРОЛЛ
    ============================================ */
-function initScrollAnimations() {
-    // Анимируем появление элементов при скролле
-    const animatedElements = document.querySelectorAll('.detail-item, .timeline-item, .color-circle');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateX(0)';
-                }, index * 100);
-                observer.unobserve(entry.target);
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+            
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         });
-    }, {
-        threshold: 0.2,
-        rootMargin: '0px 0px -50px 0px'
-    });
-    
-    animatedElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateX(-20px)';
-        element.style.transition = 'all 0.5s ease';
-        observer.observe(element);
     });
 }
 
 /* ============================================
-   ОБРАБОТКА ОШИБОК ИЗОБРАЖЕНИЙ
+   13. ПАСХАЛКИ В КОНСОЛИ
    ============================================ */
-document.querySelectorAll('img').forEach(img => {
-    img.addEventListener('error', function() {
-        console.warn('Изображение не найдено:', this.src);
-        // Добавляем fallback стили
-        this.style.background = '#F5F0EB';
-        this.style.minHeight = '200px';
-        this.style.display = 'flex';
-        this.style.alignItems = 'center';
-        this.style.justifyContent = 'center';
-        this.alt = 'Изображение скоро появится';
+function initConsoleEasterEgg() {
+    console.log(`
+    💍💍💍💍💍💍💍💍💍💍💍💍💍💍💍
+    💍                          💍
+    💍  СВАДЬБА МАШИ И СЕМЁНА  💍
+    💍    6 сентября 2026      💍
+    💍                          💍
+    💍💍💍💍💍💍💍💍💍💍💍💍💍💍💍
+    `);
+    
+    console.log('🌈 Если ты это читаешь — ты особенный гость!');
+    console.log('🎮 Попробуй игру "Собери букет" на сайте!');
+    console.log('🎆 Кликни на таймер — будет салют!');
+    console.log('🌙 Переключи тему на вечернюю (кнопка справа вверху)');
+    console.log('💝 С любовью, Маша и Семён');
+    
+    // Секретный код
+    window.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.key === 'W') {
+            console.log('🎂 ТОРТ БУДЕТ! ЧЕСТНОЕ СЛОВО! 🎂');
+            createConfetti(window.innerWidth / 2, window.innerHeight / 2, 50);
+        }
     });
-});
+}
 
 /* ============================================
-   ОТКЛЮЧЕНИЕ ЗУМА НА МОБИЛЬНЫХ
+   14. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
    ============================================ */
+
+// Отключение зума на мобильных
 document.addEventListener('dblclick', function(e) {
     if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
         e.preventDefault();
     }
 }, { passive: false });
 
-/* ============================================
-   ОПРЕДЕЛЕНИЕ МОБИЛЬНЫХ УСТРОЙСТВ
-   ============================================ */
+// Определение мобильных
 if ('ontouchstart' in window) {
     document.body.classList.add('touch-device');
 }
 
-/* ============================================
-   КОНСОЛЬНОЕ ПРИВЕТСТВИЕ
-   ============================================ */
-console.log(`
-💍 Свадьба Маши и Семёна
-📅 6 сентября 2026 года
-📍 Волгоград, Советский район
+// Обработка ошибок изображений
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', function() {
+        this.style.background = 'linear-gradient(135deg, #F5F0EB, #E8D5C8)';
+        this.style.minHeight = '200px';
+        this.alt = 'Фото скоро появится';
+    });
+});
 
-Если ты это читаешь, значит ты из тех самых гостей,
-кто лазит в консоли разработчика! 🤓
-Не забудь заполнить анкету и взять с собой хорошее настроение! 🎉
-
-P.S. А вот и пасхалка для самых любопытных! 🥚
-`);
-
-/* ============================================
-   ДОПОЛНИТЕЛЬНЫЕ ФИШКИ
-   ============================================ */
-
-// Случайные комплименты в консоли
+// Случайные комплименты в консоли каждые 30 секунд
 const compliments = [
-    'Ты сегодня отлично выглядишь! 💫',
-    'У тебя прекрасный вкус на свадьбы! 🎯',
-    'Ты точно будешь звездой танцпола! 💃',
-    'С тобой любой праздник в кайф! 🎊',
-    'Твой подарок будет лучшим! 🎁'
+    'Ты сегодня шикарно выглядишь! 💫',
+    'У тебя отличный вкус на свадьбы! 🎯',
+    'Ты будешь звездой танцпола! 💃',
+    'С тобой любой праздник — огонь! 🔥',
+    'Твой подарок будет лучшим! 🎁',
+    'Ты — душа компании! 🎉',
+    'Без тебя этот день был бы не таким! 💝'
 ];
 
-console.log(compliments[Math.floor(Math.random() * compliments.length)]);
+setInterval(() => {
+    const random = compliments[Math.floor(Math.random() * compliments.length)];
+    console.log(`💌 ${random}`);
+}, 30000);
 
-// Скрытая фича: если ввести "торт" в консоли
-window.addEventListener('keydown', function(e) {
-    if (e.key === 'F12') {
-        console.log('🎂 Торт будет! Обещаем!');
-    }
-});
-
-// Автоматическое обновление года в футере (если будет)
-const yearElements = document.querySelectorAll('.current-year');
-yearElements.forEach(el => {
-    el.textContent = new Date().getFullYear();
-});
+console.log('✅ Все системы свадьбы готовы! Ждём 6 сентября 2026! 🎊');
