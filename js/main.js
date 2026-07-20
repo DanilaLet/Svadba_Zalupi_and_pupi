@@ -1,6 +1,6 @@
 /* ============================================
    main.js - Свадьба Маши и Семёна
-   Всё работает! Баги починены! Юмор на месте!
+   Всё работает! Музыка, игра, фейерверк, Telegram!
    ============================================ */
 
 (function() {
@@ -58,39 +58,94 @@
     }
 
     /* ==========================================
-       2. МУЗЫКАЛЬНЫЙ ПЛЕЕР
+       2. МУЗЫКАЛЬНЫЙ ПЛЕЕР (ПОЛНОСТЬЮ РАБОЧИЙ)
        ========================================== */
     function initMusicPlayer() {
         var audio = document.getElementById('audio');
         var btn = document.getElementById('playBtn');
         var viz = document.getElementById('visualizer');
         
-        if (!audio || !btn) return;
+        if (!audio || !btn) {
+            console.warn('❌ Аудиоплеер: элементы не найдены');
+            return;
+        }
 
         var playing = false;
 
+        // Проверка загрузки аудио
+        audio.addEventListener('loadeddata', function() {
+            console.log('✅ Аудиофайл загружен и готов к воспроизведению');
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        });
+
+        audio.addEventListener('error', function(e) {
+            console.error('❌ Ошибка загрузки аудиофайла');
+            console.error('Проверьте, что файл audio/wedding-song.mp3 существует');
+            btn.innerHTML = '<span>🚫</span> Музыка не найдена';
+            btn.style.opacity = '0.6';
+            btn.style.pointerEvents = 'none';
+            btn.title = 'Добавьте файл audio/wedding-song.mp3';
+        });
+
+        // Основной обработчик клика
         btn.addEventListener('click', function() {
             if (playing) {
+                // Пауза
                 audio.pause();
                 btn.innerHTML = '<span class="music-icon">🎵</span> Включить музыку';
                 if (viz) viz.classList.remove('playing');
                 playing = false;
+                console.log('⏸ Музыка на паузе');
             } else {
-                audio.play().then(function() {
-                    btn.innerHTML = '<span class="music-icon">🎶</span> Пауза';
-                    if (viz) viz.classList.add('playing');
-                    playing = true;
-                }).catch(function() {
-                    alert('Нажмите ещё раз для воспроизведения музыки 🎵');
-                });
+                // Воспроизведение
+                console.log('▶ Пытаюсь запустить музыку...');
+                
+                var playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(function() {
+                        // Успешно!
+                        btn.innerHTML = '<span class="music-icon">🎶</span> Пауза';
+                        if (viz) viz.classList.add('playing');
+                        playing = true;
+                        console.log('✅ Музыка играет!');
+                    }).catch(function(error) {
+                        console.error('❌ Ошибка воспроизведения:', error);
+                        
+                        // Повторная попытка
+                        setTimeout(function() {
+                            audio.play().then(function() {
+                                btn.innerHTML = '<span class="music-icon">🎶</span> Пауза';
+                                if (viz) viz.classList.add('playing');
+                                playing = true;
+                                console.log('✅ Музыка запущена со второй попытки');
+                            }).catch(function(err2) {
+                                console.error('❌ Вторая попытка тоже не удалась:', err2);
+                                alert('Не удалось запустить музыку 😢\nПроверьте, что файл audio/wedding-song.mp3 существует.\n\nПодсказка: попробуйте нажать кнопку ещё раз!');
+                            });
+                        }, 300);
+                    });
+                }
             }
         });
 
+        // Если аудио само закончилось (на всякий случай)
         audio.addEventListener('ended', function() {
             btn.innerHTML = '<span class="music-icon">🎵</span> Включить музыку';
             if (viz) viz.classList.remove('playing');
             playing = false;
         });
+
+        // Для мобильных: разблокировка аудио при первом касании
+        var audioUnlocked = false;
+        document.addEventListener('touchstart', function unlockAudio() {
+            if (!audioUnlocked) {
+                audio.load();
+                audioUnlocked = true;
+                console.log('📱 Аудио разблокировано для мобильного устройства');
+            }
+        }, { once: false });
     }
 
     /* ==========================================
@@ -157,10 +212,6 @@
        5. ФЕЙЕРВЕРК ПРИ КЛИКЕ НА ТАЙМЕР
        ========================================== */
     function initFirework() {
-        var timerSection = document.querySelector('.countdown-section') || 
-                          document.querySelector('.section-cream:has(.countdown)');
-        
-        // Ищем секцию с таймером
         var countdownContainer = document.querySelector('.countdown');
         if (!countdownContainer) return;
 
@@ -220,19 +271,19 @@
     function spawnConfetti(x, y, count) {
         var emojis = ['🎉','💝','✨','💕','🎊','💍','🥂','🎀'];
         for (var i = 0; i < count; i++) {
-            var c = document.createElement('div');
-            c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            c.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;font-size:' + (14+Math.random()*18) + 'px;pointer-events:none;z-index:99999;transition:all 1.4s ease-out;opacity:1;';
-            document.body.appendChild(c);
-            
-            requestAnimationFrame((function(el) {
-                return function() {
-                    el.style.transform = 'translate(' + ((Math.random()-0.5)*250) + 'px, -' + (Math.random()*180+80) + 'px) rotate(' + (Math.random()*720) + 'deg)';
-                    el.style.opacity = '0';
-                };
-            })(c));
-            
-            setTimeout((function(el) { return function() { el.remove(); }; })(c), 1400);
+            (function() {
+                var c = document.createElement('div');
+                c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                c.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;font-size:' + (14+Math.random()*18) + 'px;pointer-events:none;z-index:99999;transition:all 1.4s ease-out;opacity:1;';
+                document.body.appendChild(c);
+                
+                requestAnimationFrame(function() {
+                    c.style.transform = 'translate(' + ((Math.random()-0.5)*250) + 'px, -' + (Math.random()*180+80) + 'px) rotate(' + (Math.random()*720) + 'deg)';
+                    c.style.opacity = '0';
+                });
+                
+                setTimeout(function() { c.remove(); }, 1400);
+            })();
         }
     }
 
@@ -286,7 +337,6 @@
             scoreEl.textContent = '0';
             bouquet.innerHTML = '';
             
-            // Удаляем старые цветы
             var oldFlowers = field.querySelectorAll('.flower-item');
             oldFlowers.forEach(function(f) { f.remove(); });
 
@@ -311,7 +361,6 @@
             flower.style.top = '-50px';
             flower.style.animationDuration = (3.5 + Math.random() * 3.5) + 's';
 
-            // КЛИК ПО ЦВЕТКУ
             flower.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (!active) return;
@@ -319,14 +368,12 @@
                 score += 10;
                 scoreEl.textContent = score;
 
-                // Добавляем в букет
                 var petal = document.createElement('span');
                 petal.textContent = this.textContent;
                 petal.style.display = 'inline-block';
                 petal.style.animation = 'popIn 0.3s ease forwards';
                 bouquet.appendChild(petal);
 
-                // Эффект сбора
                 this.style.transform = 'scale(2)';
                 this.style.opacity = '0';
                 this.style.transition = 'all 0.2s ease';
@@ -337,7 +384,6 @@
                     if (self.parentNode) self.remove(); 
                 }, 200);
 
-                // Бонусное сообщение каждые 100 очков
                 if (score % 100 === 0 && score > 0) {
                     showBonus();
                 }
@@ -345,7 +391,6 @@
 
             field.appendChild(flower);
 
-            // Автоудаление упавшего цветка
             var self = flower;
             setTimeout(function() {
                 if (self.parentNode) self.remove();
@@ -363,7 +408,7 @@
             
             var bonus = document.createElement('div');
             bonus.textContent = msgs[Math.floor(Math.random() * msgs.length)];
-            bonus.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;font-weight:700;color:var(--wine);pointer-events:none;z-index:20;animation:bonusPop 1.8s ease forwards;text-align:center;background:rgba(255,255,255,0.9);padding:12px 20px;border-radius:30px;box-shadow:0 4px 20px rgba(0,0,0,0.15);white-space:nowrap;';
+            bonus.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:700;color:var(--wine);pointer-events:none;z-index:20;animation:bonusPop 1.8s ease forwards;text-align:center;background:rgba(255,255,255,0.9);padding:10px 18px;border-radius:30px;box-shadow:0 4px 20px rgba(0,0,0,0.15);';
             field.appendChild(bonus);
             
             setTimeout(function() { 
@@ -371,17 +416,15 @@
             }, 1800);
         }
 
-        // Сброс игры
         if (resetBtn) {
             resetBtn.addEventListener('click', function() {
                 start();
             });
         }
 
-        // Запуск игры
         start();
 
-        // Пауза игры когда секция не видна (оптимизация)
+        // Пауза когда не видно
         if (window.IntersectionObserver) {
             var observer = new IntersectionObserver(function(entries) {
                 entries.forEach(function(entry) {
@@ -397,19 +440,19 @@
         }
     }
 
-    // Динамические стили для игры
-    var gameStyleEl = document.createElement('style');
-    gameStyleEl.textContent = 
-        '@keyframes popIn {' +
-            'from { transform: scale(0) rotate(-180deg); opacity: 0; }' +
-            'to { transform: scale(1) rotate(0deg); opacity: 1; }' +
+    // Динамические стили игры
+    var gameStyles = document.createElement('style');
+    gameStyles.textContent = 
+        '@keyframes popIn{' +
+            'from{transform:scale(0) rotate(-180deg);opacity:0;}' +
+            'to{transform:scale(1) rotate(0deg);opacity:1;}' +
         '}' +
-        '@keyframes bonusPop {' +
-            '0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }' +
-            '40% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }' +
-            '100% { opacity: 0; transform: translate(-50%, -70%) scale(0.8); }' +
+        '@keyframes bonusPop{' +
+            '0%{opacity:0;transform:translate(-50%,-50%) scale(0.5);}' +
+            '40%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}' +
+            '100%{opacity:0;transform:translate(-50%,-70%) scale(0.8);}' +
         '}';
-    document.head.appendChild(gameStyleEl);
+    document.head.appendChild(gameStyles);
 
     /* ==========================================
        8. ФОРМА ГОСТЯ — ОТПРАВКА В TELEGRAM
@@ -429,7 +472,6 @@
             var children = form.querySelector('[name="children"]');
             var wishes = form.querySelector('[name="wishes"]');
 
-            // Валидация
             if (!name || !name.value.trim()) {
                 shakeElement(name);
                 return;
@@ -449,7 +491,6 @@
                 btn.textContent = 'ОТПРАВЛЯЕТСЯ...';
             }
 
-            // Формируем сообщение для Telegram
             var msg = 
                 '🎉 *АНКЕТА ГОСТЯ — СВАДЬБА МАШИ И СЕМЁНА*\n\n' +
                 '👤 *ФИО:* ' + name.value.trim() + '\n' +
@@ -461,7 +502,6 @@
                 '📅 *Отправлено:* ' + new Date().toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) + '\n' +
                 '💍 *Свадьба:* 6 сентября 2026';
 
-            // Пытаемся отправить через Telegram Bot API
             sendToTelegram(msg, function(success) {
                 if (btn) {
                     btn.disabled = false;
@@ -469,12 +509,10 @@
                 }
 
                 if (success) {
-                    // Успешно отправлено через бота
                     form.style.display = 'none';
                     if (successMsg) successMsg.style.display = 'block';
                     spawnConfetti(window.innerWidth/2, window.innerHeight/2, 25);
                 } else {
-                    // Fallback: открываем Telegram с готовым текстом
                     var tgUrl = 'https://t.me/share/url?url=&text=' + encodeURIComponent(msg);
                     window.open(tgUrl, '_blank');
                     
@@ -500,12 +538,11 @@
         // 6. Найдите свой chat_id и вставьте ниже
         // ==========================================
         
-        var BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // ЗАМЕНИТЕ НА ТОКЕН ВАШЕГО БОТА
-        var CHAT_ID = 'YOUR_CHAT_ID_HERE';     // ЗАМЕНИТЕ НА ВАШ CHAT ID
+        var BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+        var CHAT_ID = 'YOUR_CHAT_ID_HERE';
 
-        // Если токен не указан — сразу fallback
         if (BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE' || CHAT_ID === 'YOUR_CHAT_ID_HERE') {
-            console.log('ℹ️ Telegram бот не настроен. Использую fallback (открытие Telegram).');
+            console.log('ℹ️ Telegram бот не настроен. Использую fallback.');
             callback(false);
             return;
         }
@@ -549,10 +586,9 @@
         }, 500);
     }
 
-    // Добавляем анимацию shake
-    var shakeStyle = document.createElement('style');
-    shakeStyle.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}';
-    document.head.appendChild(shakeStyle);
+    var shakeStyles = document.createElement('style');
+    shakeStyles.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}';
+    document.head.appendChild(shakeStyles);
 
     /* ==========================================
        9. ПЛАВНЫЙ СКРОЛЛ
@@ -573,7 +609,7 @@
     }
 
     /* ==========================================
-       10. ПРИВЕТСТВИЕ В КОНСОЛИ (ПАСХАЛКИ)
+       10. КОНСОЛЬНЫЕ ПАСХАЛКИ
        ========================================== */
     function showConsoleGreeting() {
         console.log('%c💍 %cСВАДЬБА МАШИ И СЕМЁНА %c💍',
@@ -581,27 +617,24 @@
         console.log('%c📅 6 сентября 2026 | 📍 Волгоград, Советский район',
             'font-size:14px;color:#C9A96E;');
         console.log('');
-        console.log('%c🎮 %cСобери букет %c— кликай по цветам!',
-            '', 'font-weight:bold;', '');
-        console.log('%c🎆 %cКликни на таймер %c— будет салют!',
-            '', 'font-weight:bold;', '');
-        console.log('%c📝 %cЗаполни анкету %c— и мы тебя ждём!',
-            '', 'font-weight:bold;', '');
+        console.log('%c🎮 Собери букет — кликай по цветам!', '');
+        console.log('%c🎆 Кликни на таймер — будет салют!', '');
+        console.log('%c🎵 Включи музыку для атмосферы!', '');
         console.log('');
         console.log('%c💝 С любовью, Маша и Семён %c🍪',
             'font-style:italic;', '');
-        console.log('%cP.S. Торт будет. Обещаем.', 'color:#8B0000;');
+        console.log('%cP.S. Торт будет. Честно-честно.', 'color:#8B0000;');
 
-        // Секретная комбинация
-        var konami = [];
+        // Konami Code
+        var keys = [];
         var secret = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight'];
         
         window.addEventListener('keydown', function(e) {
-            konami.push(e.key);
-            konami = konami.slice(-8);
+            keys.push(e.key);
+            keys = keys.slice(-8);
             
-            if (konami.join(',') === secret.join(',')) {
-                console.log('🎂🥂🍾 ТОРТ БУДЕТ! ЧЕСТНО-ЧЕСТНО! 🍾🥂🎂');
+            if (keys.join(',') === secret.join(',')) {
+                console.log('🎂🍾 ТОРТ БУДЕТ! ЧЕСТНОЕ СЛОВО! 🍾🎂');
                 spawnConfetti(window.innerWidth/2, window.innerHeight/2, 50);
             }
         });
