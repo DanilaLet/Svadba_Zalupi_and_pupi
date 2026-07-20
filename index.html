@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+    
+    <title>Приглашение на свадьбу — ВЕДЕЛИКА</title>
+    <meta name="description" content="Электронные приглашения на свадьбу и сайты-приглашения для гостей. Вся информация о торжестве в одном удобном онлайн-формате: программа дня, дресс-код, анкета гостя, карта и таймер.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Сайт-приглашение на свадьбу — ВЕДЕЛИКА">
+    <meta property="og:description" content="Электронные приглашения на свадьбу и сайты-приглашения для гостей. Современное свадебное приглашение по ссылке — быстро, красиво и удобно.">
+    <meta property="og:image" content="images/preview.jpg">
+    
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="300x300" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <meta name="format-detection" content="telephone=no, email=no, address=no">
+</head>
+<body>
+    
+    <!-- ПРЕЛОАДЕР -->
+    <div id="preloader">
+        <div class="hearts"></div>
+        <div class="loading-text">Для Вас что-то очень важное...</div>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main>
+        
+        <!-- Секция 1: Главный баннер -->
+        <section class="section hero-section">
+            <img src="images/main-banner.webp" alt="Приглашение на свадьбу" class="full-width-img">
+        </section>
+
+        <!-- Секция 2: Приглашение -->
+        <section class="section invitation-section">
+            <img src="images/invitation-text.webp" alt="Текст приглашения" class="full-width-img">
+        </section>
+
+        <!-- Секция 3: Музыка -->
+        <section class="section music-section">
+            <div class="music-player">
+                <button type="button" id="playBtn" class="play-button">
+                    <span class="play-icon">▶</span>
+                </button>
+                <audio id="audio" preload="auto">
+                    <source src="audio/wedding-song.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </section>
+
+        <!-- Секция 4: Фотогалерея 1 -->
+        <section class="section gallery-section">
+            <div class="fade-photo"><img src="images/photo-1.webp" alt="Фото 1"></div>
+            <div class="fade-photo"><img src="images/photo-2.webp" alt="Фото 2"></div>
+            <div class="fade-photo"><img src="images/photo-3.webp" alt="Фото 3"></div>
+            <div class="fade-photo"><img src="images/photo-4.webp" alt="Фото 4"></div>
+            <div class="fade-photo"><img src="images/photo-5.webp" alt="Фото 5"></div>
+            <div class="fade-photo"><img src="images/photo-6.webp" alt="Фото 6"></div>
+            <div class="fade-photo"><img src="images/photo-7.webp" alt="Фото 7"></div>
+            <div class="fade-photo"><img src="images/photo-8.webp" alt="Фото 8"></div>
+        </section>
+
+        <!-- Секция 5: Детали -->
+        <section class="section details-section">
+            <img src="images/details-banner.webp" alt="Детали мероприятия" class="full-width-img">
+        </section>
+
+        <!-- Секция 6: Фотогалерея 2 -->
+        <section class="section gallery-section">
+            <div class="fade-photo"><img src="images/photo-9.webp" alt="Фото 9"></div>
+            <div class="fade-photo"><img src="images/photo-10.webp" alt="Фото 10"></div>
+            <div class="fade-photo"><img src="images/photo-11.webp" alt="Фото 11"></div>
+            <div class="fade-photo"><img src="images/photo-12.webp" alt="Фото 12"></div>
+            <div class="fade-photo"><img src="images/photo-13.webp" alt="Фото 13"></div>
+            <div class="fade-photo"><img src="images/photo-14.webp" alt="Фото 14"></div>
+            <div class="fade-photo"><img src="images/photo-15.webp" alt="Фото 15"></div>
+            <div class="fade-photo"><img src="images/photo-16.webp" alt="Фото 16"></div>
+        </section>
+
+        <!-- Секция 7: Анкета гостя -->
+        <section class="section rsvp-section">
+            <div class="rsvp-container">
+                <form id="guestForm" class="rsvp-form">
+                    <label class="form-label">Ваше имя и фамилия:</label>
+                    <input type="text" name="name" required placeholder="Введите имя и фамилию" class="form-input">
+                    
+                    <label class="form-label">Сможете ли Вы присутствовать на нашем торжестве?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="presence" value="Да, с удовольствием" required>
+                            <span>Да, с удовольствием</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="presence" value="К сожалению, не смогу">
+                            <span>К сожалению, не смогу</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" class="submit-button">ОТПРАВИТЬ</button>
+                </form>
+                
+                <div id="successMessage" class="success-message" style="display:none;">
+                    <div class="success-icon">✓</div>
+                    <div>Анкета отправлена</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция 8: Баннер с благодарностью -->
+        <section class="section thanks-section">
+            <img src="images/thanks-banner.webp" alt="Спасибо" class="full-width-img">
+        </section>
+
+        <!-- Секция 9: Таймер -->
+        <section class="section countdown-section">
+            <div id="timer" class="countdown">
+                <div class="countdown-item">
+                    <span id="days" class="countdown-number">00</span>
+                    <span class="countdown-label">Дни</span>
+                </div>
+                <span class="countdown-separator">:</span>
+                <div class="countdown-item">
+                    <span id="hours" class="countdown-number">00</span>
+                    <span class="countdown-label">Часы</span>
+                </div>
+                <span class="countdown-separator">:</span>
+                <div class="countdown-item">
+                    <span id="minutes" class="countdown-number">00</span>
+                    <span class="countdown-label">Минуты</span>
+                </div>
+                <span class="countdown-separator">:</span>
+                <div class="countdown-item">
+                    <span id="seconds" class="countdown-number">00</span>
+                    <span class="countdown-label">Секунды</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция 10: Карта -->
+        <section class="section map-section">
+            <img src="images/map-banner.webp" alt="Карта" class="full-width-img">
+        </section>
+
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

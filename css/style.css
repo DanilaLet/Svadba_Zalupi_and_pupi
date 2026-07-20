@@ -1,0 +1,542 @@
+/* ============================================
+   CSS ПЕРЕМЕННЫЕ
+   ============================================ */
+:root {
+    /* Основные цвета */
+    --wine: #911A22;
+    --wine-dark: #7a1620;
+    --cream: #f5f1ef;
+    --cream-light: #fcf7f0;
+    --cream-dark: #e2dedb;
+    --text-dark: #143211;
+    --text-light: #5d755d;
+    --white: #ffffff;
+    --black: #000000;
+    --gold: #c9a96e;
+    
+    /* Шрифты */
+    --font-main: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-decorative: 'Candara', 'Georgia', serif;
+    
+    /* Размеры */
+    --border-radius: 23px;
+    --max-width: 500px;
+    --section-padding: 20px;
+}
+
+/* ============================================
+   СБРОС СТИЛЕЙ
+   ============================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: #fffaf4;
+    color: var(--text-dark);
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ============================================
+   ПРЕЛОАДЕР
+   ============================================ */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110%;
+    background: var(--wine);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 9999999;
+    transition: opacity 1s ease;
+}
+
+#preloader.fade-out {
+    opacity: 0;
+}
+
+.loading-text {
+    position: relative;
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    font-family: var(--font-main);
+    z-index: 2;
+    padding: 0 20px;
+}
+
+.hearts {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.heart {
+    position: absolute;
+    color: var(--white);
+    opacity: 0;
+    animation: heartFloat 5s linear infinite;
+}
+
+@keyframes heartFloat {
+    0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-120px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   ОСНОВНОЙ КОНТЕНТ
+   ============================================ */
+main {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.section {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.full-width-img {
+    width: 100%;
+    display: block;
+}
+
+/* ============================================
+   МУЗЫКАЛЬНЫЙ ПЛЕЕР
+   ============================================ */
+.music-section {
+    background-color: var(--cream-light);
+    padding: 20px 0;
+    text-align: center;
+}
+
+.music-player {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--wine);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(145, 26, 34, 0.3);
+}
+
+.music-player:hover {
+    transform: scale(1.1);
+}
+
+.music-player:active {
+    transform: scale(0.95);
+}
+
+.play-button {
+    background: transparent;
+    color: #E8E1DC;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.play-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.play-button:hover .play-icon {
+    transform: scale(1.2);
+}
+
+/* ============================================
+   ФОТОГАЛЕРЕЯ
+   ============================================ */
+.gallery-section {
+    background-color: var(--cream);
+}
+
+.fade-photo {
+    width: 100%;
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(2px);
+    transition: 
+        opacity 1.2s ease,
+        transform 1.2s ease,
+        filter 1.2s ease;
+}
+
+.fade-photo.show {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+}
+
+.fade-photo img {
+    width: 100%;
+    display: block;
+}
+
+/* ============================================
+   RSVP - АНКЕТА ГОСТЯ
+   ============================================ */
+.rsvp-section {
+    background-color: var(--cream-dark);
+    padding: 40px 20px;
+}
+
+.rsvp-container {
+    background: #E6E1DE;
+    padding: 30px 20px;
+    border-radius: 20px;
+    font-family: var(--font-main);
+    max-width: var(--max-width);
+    margin: 0 auto;
+    color: var(--black);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.rsvp-form {
+    transition: opacity 0.5s ease;
+}
+
+.form-label {
+    display: block;
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.form-input {
+    width: 100%;
+    margin: 8px 0 20px;
+    padding: 14px 16px;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    background: var(--white);
+    font-size: 16px;
+    font-family: var(--font-main);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--wine);
+    box-shadow: 0 0 0 3px rgba(145, 26, 34, 0.1);
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.radio-group {
+    margin: 8px 0 20px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.radio-label:hover {
+    color: var(--wine);
+}
+
+.radio-label input[type="radio"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--wine);
+    cursor: pointer;
+}
+
+.radio-label span {
+    user-select: none;
+}
+
+.submit-button {
+    width: 70%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--border-radius);
+    background: var(--wine);
+    color: var(--white);
+    display: block;
+    margin: 20px auto 0;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.submit-button:hover {
+    background: var(--wine-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(145, 26, 34, 0.4);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
+.submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Сообщение об успешной отправке */
+.success-message {
+    text-align: center;
+    padding: 30px 20px;
+    animation: fadeInUp 0.5s ease;
+}
+
+.success-icon {
+    font-size: 40px;
+    color: #4CAF50;
+    margin-bottom: 10px;
+    animation: scaleIn 0.5s ease;
+}
+
+.success-message div:last-child {
+    font-size: 18px;
+    color: var(--text-dark);
+    font-family: var(--font-main);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   ТАЙМЕР ОБРАТНОГО ОТСЧЕТА
+   ============================================ */
+.countdown-section {
+    background-color: var(--cream);
+    padding: 40px 20px;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-decorative);
+    font-size: 30px;
+    color: var(--black);
+    letter-spacing: 2px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.countdown-item {
+    text-align: center;
+    min-width: 60px;
+}
+
+.countdown-number {
+    display: inline-block;
+    min-width: 40px;
+    transition: all 0.4s ease;
+    font-weight: 700;
+    font-size: 36px;
+}
+
+.countdown-number.animate {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.countdown-label {
+    display: block;
+    font-size: 12px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+.countdown-separator {
+    font-size: 30px;
+    font-weight: 300;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ
+   ============================================ */
+@media (max-width: 768px) {
+    .rsvp-container {
+        padding: 25px 15px;
+        margin: 0 10px;
+    }
+    
+    .countdown {
+        font-size: 24px;
+        gap: 5px;
+    }
+    
+    .countdown-number {
+        font-size: 28px;
+        min-width: 35px;
+    }
+    
+    .countdown-separator {
+        font-size: 24px;
+    }
+    
+    .loading-text {
+        font-size: 18px;
+    }
+    
+    .submit-button {
+        width: 85%;
+    }
+}
+
+@media (max-width: 480px) {
+    .countdown {
+        font-size: 20px;
+        gap: 3px;
+    }
+    
+    .countdown-number {
+        font-size: 24px;
+        min-width: 30px;
+    }
+    
+    .countdown-separator {
+        font-size: 20px;
+    }
+    
+    .countdown-item {
+        min-width: 50px;
+    }
+    
+    .rsvp-container {
+        padding: 20px 12px;
+    }
+    
+    .form-label {
+        font-size: 15px;
+    }
+    
+    .form-input {
+        font-size: 14px;
+        padding: 12px;
+    }
+    
+    .radio-label {
+        font-size: 14px;
+    }
+}
+
+/* ============================================
+   УТИЛИТЫ
+   ============================================ */
+.hidden {
+    display: none !important;
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+/* Анимация появления секций */
+.section {
+    animation: sectionFadeIn 0.8s ease;
+}
+
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Стили для активного состояния кнопок на мобильных */
+@media (hover: none) {
+    .submit-button:hover {
+        background: var(--wine);
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .music-player:hover {
+        transform: none;
+    }
+}
