@@ -3,25 +3,25 @@
    ============================================ */
 :root {
     /* Основные цвета */
-    --wine: #911A22;
-    --wine-dark: #7a1620;
-    --cream: #f5f1ef;
-    --cream-light: #fcf7f0;
-    --cream-dark: #e2dedb;
-    --text-dark: #143211;
-    --text-light: #5d755d;
-    --white: #ffffff;
-    --black: #000000;
-    --gold: #c9a96e;
+    --wine: #8B0000;
+    --wine-dark: #5C0000;
+    --wine-light: #A52A2A;
+    --cream: #F5F0EB;
+    --cream-dark: #E8E0D5;
+    --white: #FFFFFF;
+    --black: #1A1A1A;
+    --gold: #C9A96E;
+    --text-dark: #2C1810;
+    --text-light: #6B5B4F;
     
     /* Шрифты */
     --font-main: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-decorative: 'Candara', 'Georgia', serif;
+    --font-decorative: 'Georgia', 'Times New Roman', serif;
     
     /* Размеры */
-    --border-radius: 23px;
-    --max-width: 500px;
-    --section-padding: 20px;
+    --border-radius: 15px;
+    --max-width: 600px;
+    --section-padding: 30px;
 }
 
 /* ============================================
@@ -42,12 +42,11 @@ html {
 
 body {
     font-family: var(--font-main);
-    background-color: #fffaf4;
+    background-color: #FFF8F5;
     color: var(--text-dark);
-    line-height: 1.5;
+    line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 img {
@@ -65,8 +64,9 @@ img {
     left: 0;
     width: 100%;
     height: 110%;
-    background: var(--wine);
+    background: linear-gradient(135deg, var(--wine-dark), var(--wine));
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow: hidden;
@@ -81,12 +81,13 @@ img {
 .loading-text {
     position: relative;
     color: var(--white);
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 24px;
+    font-weight: 600;
     text-align: center;
-    font-family: var(--font-main);
+    font-family: var(--font-decorative);
     z-index: 2;
     padding: 0 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hearts {
@@ -102,18 +103,19 @@ img {
     color: var(--white);
     opacity: 0;
     animation: heartFloat 5s linear infinite;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
 
 @keyframes heartFloat {
     0% {
-        transform: translateY(0) scale(0.6);
+        transform: translateY(0) scale(0.6) rotate(0deg);
         opacity: 0;
     }
     20% {
-        opacity: 1;
+        opacity: 0.8;
     }
     100% {
-        transform: translateY(-120px) scale(1.2);
+        transform: translateY(-120px) scale(1.2) rotate(20deg);
         opacity: 0;
     }
 }
@@ -130,6 +132,22 @@ main {
     width: 100%;
     position: relative;
     overflow: hidden;
+    animation: sectionFadeIn 0.8s ease;
+}
+
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bg-cream {
+    background-color: var(--cream);
 }
 
 .full-width-img {
@@ -138,114 +156,350 @@ main {
 }
 
 /* ============================================
-   МУЗЫКАЛЬНЫЙ ПЛЕЕР
+   HERO SECTION
    ============================================ */
-.music-section {
-    background-color: var(--cream-light);
-    padding: 20px 0;
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, var(--wine-dark), var(--wine));
+}
+
+.hero-content {
+    position: relative;
+}
+
+.hero-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    text-align: center;
+    color: var(--white);
+}
+
+.hero-title {
+    font-family: var(--font-decorative);
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+}
+
+.hero-date {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* ============================================
+   ТЕКСТОВЫЕ СЕКЦИИ
+   ============================================ */
+.text-section {
+    padding: 50px 20px;
+}
+
+.text-block {
+    max-width: var(--max-width);
+    margin: 0 auto;
     text-align: center;
 }
 
-.music-player {
+.emoji-decoration {
+    font-size: 48px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.section-title {
+    font-family: var(--font-decorative);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--wine);
+    margin-bottom: 25px;
+    line-height: 1.3;
+}
+
+/* Цитата */
+.love-quote {
+    font-family: var(--font-decorative);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-dark);
+    line-height: 1.8;
+    margin-bottom: 25px;
+    padding: 20px;
+    border-left: 4px solid var(--wine);
+    background: rgba(139, 0, 0, 0.05);
+    text-align: left;
+}
+
+.love-text {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+.highlight {
+    background: linear-gradient(to top, rgba(139, 0, 0, 0.2) 50%, transparent 50%);
+    padding: 0 5px;
+    font-weight: 700;
+}
+
+/* Текст приглашения */
+.invitation-text {
+    font-size: 20px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.invitation-text strong {
+    color: var(--wine);
+    font-size: 22px;
+}
+
+/* ============================================
+   КАЛЕНДАРЬ
+   ============================================ */
+.calendar-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.calendar {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 350px;
+    width: 100%;
+}
+
+.calendar-month {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--wine);
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.calendar-year {
+    font-size: 16px;
+    color: var(--text-light);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.calendar-grid span {
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.calendar-grid span:first-child,
+.calendar-grid span:nth-child(2),
+.calendar-grid span:nth-child(3),
+.calendar-grid span:nth-child(4),
+.calendar-grid span:nth-child(5),
+.calendar-grid span:nth-child(6),
+.calendar-grid span:nth-child(7) {
+    font-weight: 700;
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+.calendar-wedding-day {
+    background: var(--wine) !important;
+    color: var(--white) !important;
+    font-weight: 700;
+    transform: scale(1.2);
+    box-shadow: 0 4px 10px rgba(139, 0, 0, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 10px rgba(139, 0, 0, 0.4); }
+    50% { box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6); }
+}
+
+/* ============================================
+   ЛОКАЦИЯ
+   ============================================ */
+.location-text {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.map-link {
+    display: inline-block;
+    background: var(--wine);
+    color: var(--white);
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+}
+
+.map-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(139, 0, 0, 0.5);
+    background: var(--wine-dark);
+}
+
+/* ============================================
+   ТАЙМЛАЙН
+   ============================================ */
+.timeline {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 25px;
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px solid var(--wine-light);
+}
+
+.timeline-time {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--wine);
+    min-width: 70px;
+    margin-right: 20px;
+}
+
+.timeline-desc {
+    font-size: 16px;
+    line-height: 1.6;
+    flex: 1;
+}
+
+/* ============================================
+   ДРЕСС-КОД
+   ============================================ */
+.dresscode-colors {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.color-circle {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: var(--wine);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 20px auto;
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 15px rgba(145, 26, 34, 0.3);
-}
-
-.music-player:hover {
-    transform: scale(1.1);
-}
-
-.music-player:active {
-    transform: scale(0.95);
-}
-
-.play-button {
-    background: transparent;
-    color: #E8E1DC;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.play-icon {
-    display: inline-block;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
 }
 
-.play-button:hover .play-icon {
+.color-circle:hover {
     transform: scale(1.2);
 }
 
+.dresscode-text {
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
 /* ============================================
-   ФОТОГАЛЕРЕЯ
+   ДЕТАЛИ
    ============================================ */
-.gallery-section {
-    background-color: var(--cream);
+.details-text {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 30px;
 }
 
-.fade-photo {
-    width: 100%;
-    opacity: 0;
-    transform: scale(0.96);
-    filter: blur(2px);
-    transition: 
-        opacity 1.2s ease,
-        transform 1.2s ease,
-        filter 1.2s ease;
+.details-list {
+    text-align: left;
 }
 
-.fade-photo.show {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0);
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
 }
 
-.fade-photo img {
-    width: 100%;
-    display: block;
+.detail-item:hover {
+    transform: translateX(10px);
+}
+
+.detail-icon {
+    font-size: 30px;
+    margin-right: 15px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.detail-item span:last-child {
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 /* ============================================
-   RSVP - АНКЕТА ГОСТЯ
+   RSVP ФОРМА
    ============================================ */
 .rsvp-section {
-    background-color: var(--cream-dark);
-    padding: 40px 20px;
+    background: linear-gradient(135deg, var(--wine-dark), var(--wine));
+    padding: 50px 20px;
+    color: var(--white);
 }
 
 .rsvp-container {
-    background: #E6E1DE;
-    padding: 30px 20px;
-    border-radius: 20px;
-    font-family: var(--font-main);
     max-width: var(--max-width);
     margin: 0 auto;
-    color: var(--black);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.rsvp-container .emoji-decoration {
+    color: var(--white);
+}
+
+.rsvp-container .section-title {
+    color: var(--white);
 }
 
 .rsvp-form {
-    transition: opacity 0.5s ease;
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    color: var(--text-dark);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .form-label {
     display: block;
-    font-size: 17px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     margin-bottom: 8px;
     color: var(--text-dark);
 }
@@ -254,9 +508,9 @@ main {
     width: 100%;
     margin: 8px 0 20px;
     padding: 14px 16px;
-    border: 2px solid transparent;
-    border-radius: var(--border-radius);
-    background: var(--white);
+    border: 2px solid #E0D5C9;
+    border-radius: 10px;
+    background: #FAF8F5;
     font-size: 16px;
     font-family: var(--font-main);
     transition: all 0.3s ease;
@@ -265,11 +519,13 @@ main {
 
 .form-input:focus {
     border-color: var(--wine);
-    box-shadow: 0 0 0 3px rgba(145, 26, 34, 0.1);
+    box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+    background: var(--white);
 }
 
-.form-input::placeholder {
-    color: #999;
+.textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
 .radio-group {
@@ -279,42 +535,40 @@ main {
 .radio-label {
     display: flex;
     align-items: center;
-    padding: 8px 0;
+    padding: 10px;
+    margin-bottom: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    border-radius: 10px;
 }
 
 .radio-label:hover {
-    color: var(--wine);
+    background: rgba(139, 0, 0, 0.05);
 }
 
 .radio-label input[type="radio"] {
-    margin-right: 10px;
-    width: 18px;
-    height: 18px;
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
     accent-color: var(--wine);
     cursor: pointer;
 }
 
-.radio-label span {
-    user-select: none;
-}
-
 .submit-button {
-    width: 70%;
-    padding: 14px;
+    width: 100%;
+    padding: 16px;
     border: none;
-    border-radius: var(--border-radius);
+    border-radius: 10px;
     background: var(--wine);
     color: var(--white);
     display: block;
     margin: 20px auto 0;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     font-family: var(--font-main);
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     transition: all 0.3s ease;
     text-transform: uppercase;
 }
@@ -322,7 +576,7 @@ main {
 .submit-button:hover {
     background: var(--wine-dark);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(145, 26, 34, 0.4);
+    box-shadow: 0 10px 20px rgba(139, 0, 0, 0.4);
 }
 
 .submit-button:active {
@@ -334,24 +588,19 @@ main {
     cursor: not-allowed;
 }
 
-/* Сообщение об успешной отправке */
 .success-message {
     text-align: center;
-    padding: 30px 20px;
+    padding: 40px 20px;
     animation: fadeInUp 0.5s ease;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    color: var(--text-dark);
 }
 
 .success-icon {
-    font-size: 40px;
-    color: #4CAF50;
-    margin-bottom: 10px;
+    font-size: 50px;
+    margin-bottom: 15px;
     animation: scaleIn 0.5s ease;
-}
-
-.success-message div:last-child {
-    font-size: 18px;
-    color: var(--text-dark);
-    font-family: var(--font-main);
 }
 
 @keyframes fadeInUp {
@@ -375,36 +624,37 @@ main {
 }
 
 /* ============================================
-   ТАЙМЕР ОБРАТНОГО ОТСЧЕТА
+   ТАЙМЕР
    ============================================ */
 .countdown-section {
-    background-color: var(--cream);
-    padding: 40px 20px;
+    background: var(--cream);
+    padding: 50px 20px;
 }
 
 .countdown {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: var(--font-decorative);
-    font-size: 30px;
-    color: var(--black);
-    letter-spacing: 2px;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
+    font-family: var(--font-decorative);
 }
 
 .countdown-item {
     text-align: center;
-    min-width: 60px;
+    min-width: 80px;
 }
 
 .countdown-number {
     display: inline-block;
-    min-width: 40px;
-    transition: all 0.4s ease;
+    font-size: 48px;
     font-weight: 700;
-    font-size: 36px;
+    color: var(--wine);
+    transition: all 0.4s ease;
+    background: var(--white);
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .countdown-number.animate {
@@ -414,129 +664,147 @@ main {
 
 .countdown-label {
     display: block;
-    font-size: 12px;
-    opacity: 0.7;
+    font-size: 14px;
+    color: var(--text-light);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 5px;
+    letter-spacing: 2px;
+    margin-top: 10px;
 }
 
 .countdown-separator {
-    font-size: 30px;
+    font-size: 40px;
     font-weight: 300;
-    animation: blink 1s infinite;
+    color: var(--wine);
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+/* ============================================
+   ЗАКЛЮЧЕНИЕ
+   ============================================ */
+.final-text {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.highlight-box {
+    background: rgba(139, 0, 0, 0.05);
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px dashed var(--wine-light);
+    margin: 30px 0;
+}
+
+.signature {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid var(--cream-dark);
+}
+
+.signature-text {
+    font-family: var(--font-decorative);
+    font-size: 18px;
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+.signature-names {
+    font-family: var(--font-decorative);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--wine);
 }
 
 /* ============================================
    АДАПТИВНОСТЬ
    ============================================ */
 @media (max-width: 768px) {
-    .rsvp-container {
-        padding: 25px 15px;
-        margin: 0 10px;
+    .hero-title {
+        font-size: 32px;
     }
     
-    .countdown {
-        font-size: 24px;
-        gap: 5px;
-    }
-    
-    .countdown-number {
-        font-size: 28px;
-        min-width: 35px;
-    }
-    
-    .countdown-separator {
-        font-size: 24px;
-    }
-    
-    .loading-text {
+    .hero-date {
         font-size: 18px;
     }
     
-    .submit-button {
-        width: 85%;
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .countdown-number {
+        font-size: 36px;
+        padding: 8px 12px;
+    }
+    
+    .countdown-item {
+        min-width: 60px;
+    }
+    
+    .rsvp-form {
+        padding: 20px;
+    }
+    
+    .calendar {
+        max-width: 300px;
+    }
+    
+    .timeline-item {
+        flex-direction: column;
+    }
+    
+    .timeline-time {
+        margin-bottom: 5px;
+    }
+    
+    .color-circle {
+        width: 50px;
+        height: 50px;
     }
 }
 
 @media (max-width: 480px) {
-    .countdown {
-        font-size: 20px;
-        gap: 3px;
+    .hero-title {
+        font-size: 26px;
+    }
+    
+    .section-title {
+        font-size: 24px;
     }
     
     .countdown-number {
-        font-size: 24px;
-        min-width: 30px;
+        font-size: 28px;
+        padding: 6px 10px;
     }
     
     .countdown-separator {
-        font-size: 20px;
+        font-size: 28px;
     }
     
     .countdown-item {
         min-width: 50px;
     }
     
-    .rsvp-container {
-        padding: 20px 12px;
+    .love-quote {
+        font-size: 16px;
+        padding: 15px;
     }
     
-    .form-label {
-        font-size: 15px;
+    .detail-item {
+        flex-direction: column;
+        text-align: center;
     }
     
-    .form-input {
-        font-size: 14px;
-        padding: 12px;
-    }
-    
-    .radio-label {
-        font-size: 14px;
+    .detail-icon {
+        margin: 0 0 10px 0;
     }
 }
 
 /* ============================================
    УТИЛИТЫ
    ============================================ */
+.text-center {
+    text-align: center;
+}
+
 .hidden {
     display: none !important;
-}
-
-.no-scroll {
-    overflow: hidden;
-}
-
-/* Анимация появления секций */
-.section {
-    animation: sectionFadeIn 0.8s ease;
-}
-
-@keyframes sectionFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Стили для активного состояния кнопок на мобильных */
-@media (hover: none) {
-    .submit-button:hover {
-        background: var(--wine);
-        transform: none;
-        box-shadow: none;
-    }
-    
-    .music-player:hover {
-        transform: none;
-    }
 }
