@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="HandheldFriendly" content="true">
     
     <title>Свадьба Маши и Семёна | 6 сентября 2026</title>
-    <meta name="description" content="Приглашение на свадьбу Маши и Семёна. 6 сентября 2026 года. Вся информация о торжестве: программа дня, дресс-код, анкета гостя, карта и таймер.">
+    <meta name="description" content="Приглашение на свадьбу Маши и Семёна. 6 сентября 2026 года. Ждём вас на самой крутой свадьбе!">
     
     <meta property="og:type" content="website">
     <meta property="og:title" content="Свадьба Маши и Семёна | 6 сентября 2026">
@@ -21,40 +21,77 @@
 </head>
 <body>
     
+    <!-- ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ -->
+    <button class="theme-switch" id="themeSwitch" title="Переключить тему">
+        <span class="theme-icon">🌙</span>
+        <span class="theme-label">Вечер</span>
+    </button>
+
     <!-- ПРЕЛОАДЕР -->
     <div id="preloader">
         <div class="hearts"></div>
         <div class="loading-text">
             Маша + Семён<br>
-            <span style="font-size: 16px; margin-top: 10px; display: block;">Готовятся к чему-то важному...</span>
+            <span>Готовятся к чему-то важному...</span>
         </div>
     </div>
 
     <!-- ОСНОВНОЙ КОНТЕНТ -->
     <main>
         
-        <!-- Секция 1: Главный экран -->
-        <section class="section hero-section">
+        <!-- Секция 1: Главный экран с параллаксом -->
+        <section class="section hero-section parallax-section" data-parallax="0.4">
             <div class="hero-content">
                 <img src="images/main-photo.webp" alt="Маша и Семён" class="full-width-img">
                 <div class="hero-overlay">
                     <h1 class="hero-title">Свадьба<br>Маши и Семёна</h1>
                     <div class="hero-date">6 сентября 2026</div>
+                    
+                    <!-- Кнопка в календарь -->
+                    <a href="data:text/calendar;charset=utf-8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:20260906T120000Z%0ADTEND:20260906T200000Z%0ASUMMARY:Свадьба%20Маши%20и%20Семёна%0ALOCATION:Советский%20район%2C%20Волгоград%0ADESCRIPTION:День%20рождения%20нашей%20семьи!%20Ждём%20вас!%0AEND:VEVENT%0AEND:VCALENDAR" 
+                       download="svadba-masha-semen.ics" 
+                       class="calendar-add-btn">
+                        📅 Добавить в календарь
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- Секция 2: Узнали нас? -->
-        <section class="section text-section">
+        <!-- Секция 2: Музыкальный плеер -->
+        <section class="section music-section" id="music">
+            <div class="music-container">
+                <div class="music-visualizer" id="visualizer">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+                <button id="playBtn" class="music-btn">
+                    <span class="music-icon">🎵</span>
+                    <span class="music-text">Включить музыку</span>
+                </button>
+                <p class="music-hint">Нажмите, чтобы создать атмосферу ✨</p>
+                <audio id="audio" preload="auto" loop>
+                    <source src="audio/wedding-song.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </section>
+
+        <!-- Секция 3: Наша история с параллаксом -->
+        <section class="section text-section parallax-section" data-parallax="0.2">
             <div class="text-block">
                 <div class="emoji-decoration">💑</div>
                 <h2 class="section-title">Узнали нас?</h2>
-                <p class="love-quote">
+                <div class="love-quote">
                     «Она думала, что пицца — это вершина счастья, пока он не сделал предложение. 
                     Он думал, что пиво с друзьями — это идеальный вечер, пока она не сказала "да". 
                     Теперь они оба знают: <strong>свадьба — это когда можно и пиццу, и пиво, 
                     но в красивом платье и при галстуке»</strong>
-                </p>
+                </div>
                 <p class="love-text">
                     Короче, мы <span class="highlight">МЫ</span>. И мы решили пожениться! 
                     Да-да, те самые, что спорили о том, кто последний доест печеньку. 🍪
@@ -62,8 +99,8 @@
             </div>
         </section>
 
-        <!-- Секция 3: Приглашение -->
-        <section class="section text-section bg-cream">
+        <!-- Секция 4: Приглашение с календарём -->
+        <section class="section text-section">
             <div class="text-block">
                 <div class="emoji-decoration">💌</div>
                 <h2 class="section-title">Мы так Вас любим!</h2>
@@ -89,48 +126,57 @@
             </div>
         </section>
 
-        <!-- Секция 4: Где? -->
-        <section class="section text-section">
+        <!-- Секция 5: Где? С анимированной картой -->
+        <section class="section text-section" id="location">
             <div class="text-block">
                 <div class="emoji-decoration">📍</div>
                 <h2 class="section-title">Где?</h2>
                 <p class="location-text">
-                    Советский район Волгограда. Знаете, там где крутой дом с бассейном? 
-                    Ну тот самый, где чисто пушка-погремушка! 🏊‍♂️
+                    Советский район Волгограда. Тот самый крутой дом с бассейном! 
+                    Чисто пушка-погремушка! 🏊‍♂️
                 </p>
                 <p class="location-text">
                     Только без ночёвки — мы вас любим, но не настолько, чтобы видеть утренними. 😴
                 </p>
-                <a href="https://yandex.ru/maps/?text=Советский+район+Волгоград" 
-                   class="map-link" 
-                   target="_blank">
-                    🚗 Открыть в Яндекс.Картах<br>
-                    <span style="font-size: 14px;">(чтоб сразу туда ехать можно было)</span>
-                </a>
+                
+                <!-- Анимированная карта -->
+                <div class="map-container" id="mapContainer">
+                    <div class="map-pin">📍</div>
+                    <div class="map-route">
+                        <div class="route-dot start">🏠</div>
+                        <div class="route-line"></div>
+                        <div class="route-dot end">💒</div>
+                    </div>
+                    <a href="https://yandex.ru/maps/?text=Советский+район+Волгоград" 
+                       class="map-link" 
+                       target="_blank">
+                        🚗 Открыть в Яндекс.Картах
+                    </a>
+                </div>
             </div>
         </section>
 
-        <!-- Секция 5: Во сколько? -->
-        <section class="section text-section bg-cream">
+        <!-- Секция 6: Во сколько? -->
+        <section class="section text-section">
             <div class="text-block">
                 <div class="emoji-decoration">⏰</div>
                 <h2 class="section-title">Во сколько?</h2>
                 <div class="timeline">
                     <div class="timeline-item">
                         <div class="timeline-time">15:00</div>
-                        <div class="timeline-desc">Начало сбора гостей (не опаздывайте, мы всё видим 👀)</div>
+                        <div class="timeline-desc">Сбор гостей (не опаздывайте, мы всё видим 👀)</div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-time">15:30</div>
-                        <div class="timeline-desc">Время на хи-ха, ха-ха (обнимашки, фото, комплименты)</div>
+                        <div class="timeline-desc">Хи-ха, ха-ха (обнимашки, фото, комплименты)</div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-time">16:00</div>
-                        <div class="timeline-desc">Церемония (та самая часть, где плачут даже суровые мужчины)</div>
+                        <div class="timeline-desc">Церемония (даже суровые мужчины плачут)</div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-time">17:00</div>
-                        <div class="timeline-desc">Фуршет и время для тостов (готовьте свои лучшие речи!)</div>
+                        <div class="timeline-desc">Фуршет и тосты (готовьте речи!)</div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-time">19:00</div>
@@ -138,43 +184,52 @@
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-time">23:00</div>
-                        <div class="timeline-desc">Прощание (мы вас любим, но пора и честь знать)</div>
+                        <div class="timeline-desc">Прощание (пора и честь знать)</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Секция 6: Дресс-код -->
-        <section class="section text-section">
+        <!-- Секция 7: Дресс-код + Генератор палитры -->
+        <section class="section text-section" id="dresscode">
             <div class="text-block">
                 <div class="emoji-decoration">👗</div>
                 <h2 class="section-title">Дресс-код</h2>
-                <div class="dresscode-colors">
-                    <div class="color-circle" style="background: #8B0000;"></div>
-                    <div class="color-circle" style="background: #A52A2A;"></div>
-                    <div class="color-circle" style="background: #CD5C5C;"></div>
-                    <div class="color-circle" style="background: #800020;"></div>
-                    <div class="color-circle" style="background: #722F37;"></div>
+                
+                <!-- Генератор палитры -->
+                <div class="outfit-helper">
+                    <h3>Что надеть? 🤔</h3>
+                    <div class="dresscode-colors">
+                        <div class="color-circle" style="background: #8B0000;" data-color="Бордовый"></div>
+                        <div class="color-circle" style="background: #A52A2A;" data-color="Винный"></div>
+                        <div class="color-circle" style="background: #CD5C5C;" data-color="Розовый"></div>
+                        <div class="color-circle" style="background: #800020;" data-color="Рубиновый"></div>
+                        <div class="color-circle" style="background: #722F37;" data-color="Марсала"></div>
+                    </div>
+                    <div class="color-suggestion" id="colorSuggestion">
+                        Нажмите на цвет, чтобы увидеть пример образа
+                    </div>
                 </div>
+                
                 <p class="dresscode-text">
                     Основные цвета: <strong>бордовый, винный, красный</strong> и их оттенки. 
                     Представьте, что вы — бокал дорогого красного вина. 🍷
                 </p>
                 <p class="dresscode-text">
-                    Никаких белых платьев (кроме невесты — она одна такая звезда), 
-                    никаких спортивных костюмов (даже если они Gucci), 
+                    Никаких белых платьев (кроме невесты), 
+                    никаких спортивных костюмов (даже если Gucci), 
                     и пожалуйста, никаких тапок с носками! 🙏
                 </p>
             </div>
         </section>
 
-        <!-- Секция 7: Детали -->
-        <section class="section text-section bg-cream">
+        <!-- Секция 8: Детали -->
+        <section class="section text-section">
             <div class="text-block">
                 <div class="emoji-decoration">💡</div>
                 <h2 class="section-title">Детали</h2>
                 <p class="details-text">
-                    Друзья, мы не зажрались и не охуели (простите за прямоту). 
+                    Друзья, мы не зажрались и не охуели. 
                     Поэтому давайте без лишних церемоний:
                 </p>
                 <div class="details-list">
@@ -184,18 +239,36 @@
                     </div>
                     <div class="detail-item">
                         <span class="detail-icon">💰</span>
-                        <span>Говорят, на свадьбе будет торт, который мы будем продавать по кусочкам. Шутка! Но наличку лучше взять — в ЗАГСе карты не принимают (тоже шутка, но вы поняли 😉)</span>
+                        <span>Торт продавать будем (шутка). Но наличку лучше взять — для развития семейного гнёздышка и закупки печенек 🏠</span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-icon">🎁</span>
-                        <span>Лучший подарок — это ваше присутствие. Но если очень хочется, конверт всегда кстати (на развитие семейного гнёздышка и закупку печенек) 🏠</span>
+                        <span>Лучший подарок — это вы. Но конверт всегда кстати 😉</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Секция 8: Анкета гостя -->
-        <section class="section rsvp-section">
+        <!-- Секция 9: Мини-игра "Собери букет" -->
+        <section class="section game-section" id="game">
+            <div class="text-block">
+                <div class="emoji-decoration">💐</div>
+                <h2 class="section-title">Собери букет!</h2>
+                <p class="game-intro">Кликай по цветам и собирай букет для молодожёнов!</p>
+                <div class="game-area" id="gameArea">
+                    <div class="game-score">
+                        <span>Букет: </span>
+                        <span id="score">0</span>
+                        <span> цветов</span>
+                    </div>
+                    <div class="game-bouquet" id="bouquet"></div>
+                </div>
+                <button class="game-btn" id="resetGame">🌺 Собрать новый букет</button>
+            </div>
+        </section>
+
+        <!-- Секция 10: Анкета гостя -->
+        <section class="section rsvp-section" id="rsvp">
             <div class="rsvp-container">
                 <div class="emoji-decoration">📝</div>
                 <h2 class="section-title text-center">Будете?</h2>
@@ -217,15 +290,15 @@
                             <span>Буду со своей второй половинкой 💑</span>
                         </label>
                         <label class="radio-label">
-                            <input type="radio" name="presence" value="К сожалению, не смогу">
+                            <input type="radio" name="presence" value="Не смогу">
                             <span>Не смогу, но мысленно с вами 💔</span>
                         </label>
                     </div>
 
-                    <label class="form-label">Если с вами будут дети, укажите их имена и возраст:</label>
+                    <label class="form-label">Если с вами будут дети, укажите:</label>
                     <input type="text" name="children" placeholder="Петя 5 лет, Маша 3 года" class="form-input">
                     
-                    <label class="form-label">Ваши пожелания молодожёнам (или смешная история про нас):</label>
+                    <label class="form-label">Пожелания молодожёнам:</label>
                     <textarea name="wishes" placeholder="Тут можно написать всё, что душе угодно..." class="form-input textarea"></textarea>
                     
                     <button type="submit" id="submitBtn" class="submit-button">ОТПРАВИТЬ</button>
@@ -239,8 +312,8 @@
             </div>
         </section>
 
-        <!-- Секция 9: Таймер -->
-        <section class="section countdown-section">
+        <!-- Секция 11: Таймер с фейерверком -->
+        <section class="section countdown-section parallax-section" data-parallax="0.3">
             <div class="text-block">
                 <div class="emoji-decoration">⏳</div>
                 <h2 class="section-title">До свадьбы осталось:</h2>
@@ -265,10 +338,11 @@
                         <span class="countdown-label">Секунд</span>
                     </div>
                 </div>
+                <p class="timer-hint">Кликни на таймер — будет салют! 🎆</p>
             </div>
         </section>
 
-        <!-- Секция 10: Заключение -->
+        <!-- Секция 12: Заключение -->
         <section class="section text-section">
             <div class="text-block">
                 <div class="emoji-decoration">🎊</div>
@@ -291,6 +365,9 @@
         </section>
 
     </main>
+
+    <!-- ФЕЙЕРВЕРК-КОНТЕЙНЕР -->
+    <div class="firework-container" id="fireworkContainer"></div>
 
     <script src="js/main.js"></script>
 </body>
