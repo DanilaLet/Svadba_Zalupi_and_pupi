@@ -54,7 +54,7 @@
         <section class="section section-cream">
             <div class="container">
                 <div class="music-player">
-                    <p style="margin-bottom:12px;font-style:italic;">Включи музыку для атмосферы!</p>
+                    <p class="music-label">Включи музыку для атмосферы! 🎶</p>
                     <div class="visualizer" id="visualizer">
                         <span></span><span></span><span></span><span></span><span></span>
                         <span></span><span></span><span></span><span></span><span></span>
@@ -64,6 +64,10 @@
                     <button id="playBtn" class="btn btn-music">
                         <span class="music-icon">🎵</span> Включить музыку
                     </button>
+                    <audio id="audio" preload="auto" loop>
+                        <source src="audio/wedding-song.mp3" type="audio/mpeg">
+                        Ваш браузер не поддерживает аудио.
+                    </audio>
                 </div>
             </div>
         </section>
@@ -79,7 +83,7 @@
                     Теперь они оба знают: <strong>свадьба — это когда можно и пиццу, и пиво, 
                     но в красивом платье и при галстуке»</strong>
                 </blockquote>
-                <p>Короче, мы <strong>МЫ</strong>. И мы решили пожениться! 
+                <p class="text-block-p">Короче, мы <strong>МЫ</strong>. И мы решили пожениться! 
                 Да-да, те самые, что спорили о том, кто последний доест печеньку. 🍪</p>
             </div>
         </section>
@@ -89,7 +93,7 @@
             <div class="container">
                 <span class="section-emoji">💌</span>
                 <h2 class="section-title">Мы так Вас любим!</h2>
-                <p class="invitation-text">
+                <p class="text-block-p">
                     Поэтому приглашаем стать свидетелями дня рождения нашей семьи, 
                     который состоится <strong>6 сентября 2026 года!</strong>
                 </p>
@@ -113,7 +117,7 @@
             <div class="container">
                 <span class="section-emoji">📍</span>
                 <h2 class="section-title">Где?</h2>
-                <p>Советский район Волгограда. Знаете, там где крутой дом с бассейном? 
+                <p class="text-block-p">Советский район Волгограда. Знаете, там где крутой дом с бассейном? 
                 Ну тот самый, где чисто пушка-погремушка! 🏊‍♂️</p>
                 <p class="text-small">Только без ночёвки — мы вас любим, но не настолько, чтобы видеть утренними. 😴</p>
                 <div class="map-block">
@@ -126,8 +130,8 @@
                     <a href="https://yandex.ru/maps/?text=Советский+район+Волгоград" 
                        target="_blank" 
                        class="btn btn-map">
-                        🚗 Открыть в Яндекс.Картах<br>
-                        <span style="font-size:13px;">чтоб сразу туда ехать можно было</span>
+                        🚗 Открыть в Яндекс.Картах
+                        <small>чтоб сразу туда ехать можно было</small>
                     </a>
                 </div>
             </div>
@@ -180,7 +184,7 @@
                     <div class="color-swatch" style="background:#722F37" data-name="Марсала"></div>
                 </div>
                 <div class="palette-hint" id="paletteHint">Нажми на цвет — узнаешь, что надеть!</div>
-                <p>Основные цвета: <strong>бордовый, винный, красный</strong> и их оттенки. 
+                <p class="text-block-p">Основные цвета: <strong>бордовый, винный, красный</strong> и их оттенки. 
                 Представьте, что вы — бокал дорогого красного вина. 🍷</p>
                 <p class="text-small">Никаких белых платьев (кроме невесты — она одна такая звезда), 
                 никаких спортивных костюмов (даже если они Gucci), 
@@ -193,7 +197,7 @@
             <div class="container">
                 <span class="section-emoji">💐</span>
                 <h2 class="section-title">Собери букет!</h2>
-                <p>Кликай по цветам и собирай букет для молодожёнов! Кто больше соберёт — тот главный гость! 👑</p>
+                <p class="text-block-p">Кликай по цветам и собирай букет для молодожёнов! Кто больше соберёт — тот главный гость! 👑</p>
                 <div class="game-box" id="gameBox">
                     <div class="game-score">🌸 Собрано: <strong id="gameScore">0</strong></div>
                     <div class="game-field" id="gameField"></div>
@@ -208,7 +212,7 @@
             <div class="container">
                 <span class="section-emoji">💡</span>
                 <h2 class="section-title">Детали</h2>
-                <p style="margin-bottom:20px;">
+                <p class="text-block-p">
                     Друзья, мы не зажрались и не охуели (простите за прямоту). 
                     Поэтому давайте без лишних церемоний:
                 </p>
@@ -306,7 +310,7 @@
         <section class="section section-white">
             <div class="container">
                 <span class="section-emoji">🎊</span>
-                <p class="final-text">
+                <p class="text-block-p">
                     Ждём вас на самой крутой свадьбе этого года! 
                     Будет весело, громко и очень душевно. 
                     Захватите хорошее настроение, танцевальные туфли и пару салфеток 
