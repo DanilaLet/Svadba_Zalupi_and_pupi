@@ -1,5 +1,5 @@
 /* ============================================
-   main.js - Основной JavaScript файл
+   main.js - Свадьба Маши и Семёна
    ============================================ */
 
 // Ждём загрузки DOM
@@ -8,9 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализация всех функций
     initPreloader();
     initAudioPlayer();
-    initPhotoGallery();
+    initSmoothScroll();
     initCountdown();
     initGuestForm();
+    initCalendarAnimation();
+    initScrollAnimations();
     
 });
 
@@ -21,19 +23,24 @@ function initPreloader() {
     const container = document.querySelector('.hearts');
     const preloader = document.getElementById('preloader');
     
-    // Создаём 50 сердечек
+    // Создаём 60 сердечек (больше = красивее)
     if (container) {
-        for (let i = 0; i < 50; i++) {
+        const heartEmojis = ['♥️', '❤️', '💕', '💗', '💖', '💝'];
+        
+        for (let i = 0; i < 60; i++) {
             const heart = document.createElement('div');
             heart.classList.add('heart');
-            heart.innerHTML = '♥️';
+            
+            // Случайный смайлик сердечка
+            heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
             
             // Случайные позиции и размеры
             heart.style.left = Math.random() * 100 + '%';
             heart.style.top = Math.random() * 100 + '%';
-            heart.style.fontSize = (12 + Math.random() * 22) + 'px';
+            heart.style.fontSize = (14 + Math.random() * 28) + 'px';
             heart.style.animationDelay = Math.random() * 5 + 's';
-            heart.style.animationDuration = (3 + Math.random() * 4) + 's';
+            heart.style.animationDuration = (3 + Math.random() * 5) + 's';
+            heart.style.opacity = Math.random() * 0.5 + 0.3;
             
             container.appendChild(heart);
         }
@@ -44,7 +51,6 @@ function initPreloader() {
         setTimeout(() => {
             preloader.classList.add('fade-out');
             
-            // Удаляем прелоадер из DOM после анимации
             setTimeout(() => {
                 preloader.style.display = 'none';
             }, 1000);
@@ -53,97 +59,56 @@ function initPreloader() {
 }
 
 /* ============================================
-   АУДИО ПЛЕЕР
+   АУДИО ПЛЕЕР (если будет музыка)
    ============================================ */
 function initAudioPlayer() {
+    // Если в будущем добавите музыку, раскомментируйте:
+    /*
     const audio = document.getElementById('audio');
     const playBtn = document.getElementById('playBtn');
     const playIcon = document.querySelector('.play-icon');
     
     if (!audio || !playBtn) return;
     
-    // Обработчик клика по кнопке
     playBtn.addEventListener('click', function() {
         if (audio.paused) {
-            // Воспроизводим
             audio.play().then(() => {
                 playIcon.textContent = '⏸';
             }).catch(error => {
-                console.log('Ошибка воспроизведения:', error);
-                // Показываем подсказку для мобильных устройств
-                alert('Нажмите на кнопку ещё раз для воспроизведения музыки');
+                console.log('Нажмите ещё раз для музыки');
             });
         } else {
-            // Ставим на паузу
             audio.pause();
             playIcon.textContent = '▶';
         }
     });
-    
-    // Обновляем иконку когда аудио заканчивается
-    audio.addEventListener('ended', function() {
-        playIcon.textContent = '▶';
-    });
-    
-    // Обработка ошибок загрузки аудио
-    audio.addEventListener('error', function() {
-        console.log('Ошибка загрузки аудиофайла');
-        playIcon.textContent = '🔇';
-        playBtn.style.opacity = '0.5';
-    });
+    */
 }
 
 /* ============================================
-   ФОТОГАЛЕРЕЯ С АНИМАЦИЕЙ
+   ПЛАВНЫЙ СКРОЛЛ
    ============================================ */
-function initPhotoGallery() {
-    const photos = document.querySelectorAll('.fade-photo');
-    
-    if (photos.length === 0) return;
-    
-    // Используем Intersection Observer для ленивой загрузки
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                // Добавляем задержку для каскадной анимации
-                setTimeout(() => {
-                    entry.target.classList.add('show');
-                }, index * 60);
-                
-                // Прекращаем наблюдение после показа
-                observer.unobserve(entry.target);
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
     });
-    
-    // Начинаем наблюдение за всеми фото
-    photos.forEach(photo => {
-        observer.observe(photo);
-    });
-    
-    // Показываем первые фото при загрузке страницы
-    setTimeout(() => {
-        const visiblePhotos = Array.from(photos).filter(photo => {
-            const rect = photo.getBoundingClientRect();
-            return rect.top < window.innerHeight + 100;
-        });
-        
-        visiblePhotos.forEach((photo, index) => {
-            setTimeout(() => {
-                photo.classList.add('show');
-            }, index * 60);
-        });
-    }, 200);
 }
 
 /* ============================================
    ТАЙМЕР ОБРАТНОГО ОТСЧЕТА
    ============================================ */
 function initCountdown() {
-    const weddingDate = new Date('2026-08-12T00:00:00').getTime();
+    // Устанавливаем дату свадьбы: 6 сентября 2026 года
+    const weddingDate = new Date('2026-09-06T15:00:00').getTime();
     
     function animateChange(element, newValue) {
         if (!element) return;
@@ -151,7 +116,6 @@ function initCountdown() {
         // Если значение не изменилось, не анимируем
         if (element.textContent === newValue) return;
         
-        // Добавляем класс для анимации
         element.classList.add('animate');
         
         setTimeout(() => {
@@ -173,7 +137,17 @@ function initCountdown() {
         // Если дата прошла
         if (diff <= 0) {
             if (timerContainer) {
-                timerContainer.innerHTML = '<div style="font-size: 36px; font-weight: 700; text-align: center; width: 100%;">СЕГОДНЯ! 🎉</div>';
+                timerContainer.innerHTML = `
+                    <div style="
+                        font-size: 42px; 
+                        font-weight: 700; 
+                        text-align: center; 
+                        width: 100%;
+                        color: var(--wine);
+                        animation: pulse 2s infinite;
+                    ">
+                        СЕГОДНЯ! 🎉
+                    </div>`;
             }
             return;
         }
@@ -215,20 +189,28 @@ function initGuestForm() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Базовая валидация
+        // Получаем данные формы
         const nameInput = form.querySelector('input[name="name"]');
+        const phoneInput = form.querySelector('input[name="phone"]');
         const presenceInput = form.querySelector('input[name="presence"]:checked');
+        const childrenInput = form.querySelector('input[name="children"]');
+        const wishesInput = form.querySelector('textarea[name="wishes"]');
         
-        // Проверка имени
+        // Валидация
         if (!nameInput || !nameInput.value.trim()) {
-            alert('Пожалуйста, введите ваше имя и фамилию');
+            alert('Пожалуйста, введите ваше ФИО 🙏');
             nameInput.focus();
             return false;
         }
         
-        // Проверка выбора присутствия
+        if (!phoneInput || !phoneInput.value.trim()) {
+            alert('Пожалуйста, введите номер телефона 📱');
+            phoneInput.focus();
+            return false;
+        }
+        
         if (!presenceInput) {
-            alert('Пожалуйста, выберите вариант ответа');
+            alert('Пожалуйста, выберите вариант ответа 🤔');
             return false;
         }
         
@@ -238,105 +220,212 @@ function initGuestForm() {
             submitBtn.textContent = 'ОТПРАВЛЯЕТСЯ...';
         }
         
-        // Имитация отправки (замените на реальный сервис)
+        // Формируем сообщение
+        const message = encodeURIComponent(
+            `🎉 *АНКЕТА ГОСТЯ*\n\n` +
+            `👤 *ФИО:* ${nameInput.value.trim()}\n` +
+            `📱 *Телефон:* ${phoneInput.value.trim()}\n` +
+            `✅ *Присутствие:* ${presenceInput.value}\n` +
+            (childrenInput.value.trim() ? `👶 *Дети:* ${childrenInput.value.trim()}\n` : '') +
+            (wishesInput.value.trim() ? `💝 *Пожелания:* ${wishesInput.value.trim()}\n` : '') +
+            `\n---\n📅 Дата отправки: ${new Date().toLocaleDateString('ru-RU')}`
+        );
+        
+        // Открываем WhatsApp с сообщением
+        // ЗАМЕНИТЕ НОМЕР НА ВАШ:
+        const phoneNumber = '79991234567'; // Укажите ваш номер для WhatsApp
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+        
+        // Показываем сообщение об успехе
         setTimeout(() => {
-            // Скрываем форму
             form.style.display = 'none';
-            
-            // Показываем сообщение об успехе
             if (successMessage) {
                 successMessage.style.display = 'block';
             }
             
-            // Разблокируем кнопку (на случай если форма снова понадобится)
+            // Открываем WhatsApp в новой вкладке
+            window.open(whatsappUrl, '_blank');
+            
+            // Разблокируем кнопку
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'ОТПРАВИТЬ';
             }
-            
-            // Здесь можно добавить реальную отправку данных
-            sendFormData({
-                name: nameInput.value.trim(),
-                presence: presenceInput.value
-            });
-            
-        }, 1500);
+        }, 1000);
         
         return false;
     });
 }
 
 /* ============================================
-   ОТПРАВКА ДАННЫХ ФОРМЫ
-   (Замените на свой сервис)
+   АНИМАЦИЯ КАЛЕНДАРЯ
    ============================================ */
-function sendFormData(data) {
-    // Вариант 1: Google Forms
-    // const formUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
-    // const formData = new FormData();
-    // formData.append('entry.123456789', data.name);
-    // formData.append('entry.987654321', data.presence);
-    // 
-    // fetch(formUrl, {
-    //     method: 'POST',
-    //     mode: 'no-cors',
-    //     body: formData
-    // });
+function initCalendarAnimation() {
+    const weddingDay = document.querySelector('.calendar-wedding-day');
     
-    // Вариант 2: Formspree (замените YOUR_FORM_ID)
-    // fetch('https://formspree.io/f/YOUR_FORM_ID', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(data)
-    // });
+    if (!weddingDay) return;
     
-    // Пока просто логируем в консоль
-    console.log('Данные формы:', data);
-    console.log('Для реальной отправки настройте Google Forms или Formspree');
+    // Добавляем эффект пульсации при наведении
+    weddingDay.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.3)';
+        this.style.transition = 'transform 0.3s ease';
+    });
+    
+    weddingDay.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1.2)';
+    });
+    
+    // Добавляем конфетти при клике на дату (шутка)
+    weddingDay.addEventListener('click', function() {
+        this.style.transform = 'scale(1.5)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1.2)';
+        }, 200);
+        
+        // Можно добавить реальный эффект конфетти
+        createMiniConfetti(this);
+    });
 }
 
 /* ============================================
-   ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
+   МИНИ-КОНФЕТТИ (для календаря)
    ============================================ */
+function createMiniConfetti(element) {
+    const confettiEmojis = ['🎉', '💝', '✨', '💕', '🎊', '💍'];
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    for (let i = 0; i < 8; i++) {
+        const confetti = document.createElement('div');
+        confetti.textContent = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
+        confetti.style.cssText = `
+            position: fixed;
+            left: ${centerX}px;
+            top: ${centerY}px;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 99999;
+            transition: all 1s ease-out;
+            opacity: 1;
+        `;
+        
+        document.body.appendChild(confetti);
+        
+        // Анимируем разлёт
+        setTimeout(() => {
+            confetti.style.transform = `translate(${(Math.random() - 0.5) * 200}px, ${-(Math.random() * 150 + 50)}px) rotate(${Math.random() * 720}deg)`;
+            confetti.style.opacity = '0';
+        }, 10);
+        
+        // Удаляем после анимации
+        setTimeout(() => {
+            confetti.remove();
+        }, 1000);
+    }
+}
 
-// Плавный скролл для якорных ссылок
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+/* ============================================
+   АНИМАЦИИ ПРИ СКРОЛЛЕ
+   ============================================ */
+function initScrollAnimations() {
+    // Анимируем появление элементов при скролле
+    const animatedElements = document.querySelectorAll('.detail-item, .timeline-item, .color-circle');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }, index * 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
     });
-});
+    
+    animatedElements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateX(-20px)';
+        element.style.transition = 'all 0.5s ease';
+        observer.observe(element);
+    });
+}
 
-// Обработка ошибок загрузки изображений
+/* ============================================
+   ОБРАБОТКА ОШИБОК ИЗОБРАЖЕНИЙ
+   ============================================ */
 document.querySelectorAll('img').forEach(img => {
     img.addEventListener('error', function() {
-        console.log('Ошибка загрузки изображения:', this.src);
-        // Можно добавить fallback изображение
-        // this.src = 'images/fallback.jpg';
+        console.warn('Изображение не найдено:', this.src);
+        // Добавляем fallback стили
+        this.style.background = '#F5F0EB';
+        this.style.minHeight = '200px';
+        this.style.display = 'flex';
+        this.style.alignItems = 'center';
+        this.style.justifyContent = 'center';
+        this.alt = 'Изображение скоро появится';
     });
 });
 
-// Отключаем зум на двойной тап для мобильных
+/* ============================================
+   ОТКЛЮЧЕНИЕ ЗУМА НА МОБИЛЬНЫХ
+   ============================================ */
 document.addEventListener('dblclick', function(e) {
     if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
         e.preventDefault();
     }
 }, { passive: false });
 
-// Добавляем класс для устройств с touch-screen
+/* ============================================
+   ОПРЕДЕЛЕНИЕ МОБИЛЬНЫХ УСТРОЙСТВ
+   ============================================ */
 if ('ontouchstart' in window) {
     document.body.classList.add('touch-device');
 }
 
-// Вывод информации в консоль
-console.log('🌸 Свадебное приглашение загружено!');
-console.log('📅 Дата свадьбы: 12 августа 2026 года');
-console.log('💝 С любовью, жених и невеста');
+/* ============================================
+   КОНСОЛЬНОЕ ПРИВЕТСТВИЕ
+   ============================================ */
+console.log(`
+💍 Свадьба Маши и Семёна
+📅 6 сентября 2026 года
+📍 Волгоград, Советский район
+
+Если ты это читаешь, значит ты из тех самых гостей,
+кто лазит в консоли разработчика! 🤓
+Не забудь заполнить анкету и взять с собой хорошее настроение! 🎉
+
+P.S. А вот и пасхалка для самых любопытных! 🥚
+`);
+
+/* ============================================
+   ДОПОЛНИТЕЛЬНЫЕ ФИШКИ
+   ============================================ */
+
+// Случайные комплименты в консоли
+const compliments = [
+    'Ты сегодня отлично выглядишь! 💫',
+    'У тебя прекрасный вкус на свадьбы! 🎯',
+    'Ты точно будешь звездой танцпола! 💃',
+    'С тобой любой праздник в кайф! 🎊',
+    'Твой подарок будет лучшим! 🎁'
+];
+
+console.log(compliments[Math.floor(Math.random() * compliments.length)]);
+
+// Скрытая фича: если ввести "торт" в консоли
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'F12') {
+        console.log('🎂 Торт будет! Обещаем!');
+    }
+});
+
+// Автоматическое обновление года в футере (если будет)
+const yearElements = document.querySelectorAll('.current-year');
+yearElements.forEach(el => {
+    el.textContent = new Date().getFullYear();
+});
