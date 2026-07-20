@@ -1,6 +1,6 @@
 /* ============================================
    main.js - Свадьба Маши и Семёна
-   Всё работает, баги исправлены, отправка в Telegram
+   Всё работает! Баги починены! Юмор на месте!
    ============================================ */
 
 (function() {
@@ -15,9 +15,8 @@
 
     function init() {
         initPreloader();
-        initThemeSwitcher();
         initMusicPlayer();
-        initCalendar();
+        initCalendarConfetti();
         initCountdown();
         initFirework();
         initColorPalette();
@@ -59,30 +58,7 @@
     }
 
     /* ==========================================
-       2. ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ
-       ========================================== */
-    function initThemeSwitcher() {
-        var btn = document.getElementById('themeSwitch');
-        var icon = btn ? btn.querySelector('.theme-icon') : null;
-        var html = document.documentElement;
-        
-        if (!btn) return;
-
-        var saved = localStorage.getItem('wed-theme') || 'light';
-        html.setAttribute('data-theme', saved);
-        icon.textContent = saved === 'dark' ? '☀️' : '🌙';
-
-        btn.addEventListener('click', function() {
-            var current = html.getAttribute('data-theme');
-            var next = current === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('wed-theme', next);
-            icon.textContent = next === 'dark' ? '☀️' : '🌙';
-        });
-    }
-
-    /* ==========================================
-       3. МУЗЫКАЛЬНЫЙ ПЛЕЕР
+       2. МУЗЫКАЛЬНЫЙ ПЛЕЕР
        ========================================== */
     function initMusicPlayer() {
         var audio = document.getElementById('audio');
@@ -105,7 +81,7 @@
                     if (viz) viz.classList.add('playing');
                     playing = true;
                 }).catch(function() {
-                    alert('Нажмите ещё раз для воспроизведения 🎵');
+                    alert('Нажмите ещё раз для воспроизведения музыки 🎵');
                 });
             }
         });
@@ -118,19 +94,19 @@
     }
 
     /* ==========================================
-       4. КАЛЕНДАРЬ (конфетти при клике)
+       3. КОНФЕТТИ ПРИ КЛИКЕ НА ДАТУ В КАЛЕНДАРЕ
        ========================================== */
-    function initCalendar() {
+    function initCalendarConfetti() {
         var day = document.querySelector('.day-wedding');
         if (!day) return;
 
         day.addEventListener('click', function(e) {
-            spawnConfetti(e.clientX, e.clientY, 12);
+            spawnConfetti(e.clientX, e.clientY, 15);
         });
     }
 
     /* ==========================================
-       5. ТАЙМЕР ОБРАТНОГО ОТСЧЁТА
+       4. ТАЙМЕР ОБРАТНОГО ОТСЧЁТА
        ========================================== */
     function initCountdown() {
         var wedding = new Date('2026-09-06T15:00:00').getTime();
@@ -147,7 +123,7 @@
 
             if (diff <= 0) {
                 if (timer) {
-                    timer.innerHTML = '<div style="font-size:40px;font-weight:700;color:var(--wine);text-align:center;width:100%">СЕГОДНЯ! 🎉💍</div>';
+                    timer.innerHTML = '<div style="font-size:42px;font-weight:700;color:var(--wine);text-align:center;width:100%;animation:pulse 1.5s infinite;">СЕГОДНЯ! 🎉💍</div>';
                 }
                 return;
             }
@@ -178,17 +154,26 @@
     }
 
     /* ==========================================
-       6. ФЕЙЕРВЕРК
+       5. ФЕЙЕРВЕРК ПРИ КЛИКЕ НА ТАЙМЕР
        ========================================== */
     function initFirework() {
-        var timerSection = document.querySelector('.countdown').parentElement.parentElement;
-        if (!timerSection) return;
+        var timerSection = document.querySelector('.countdown-section') || 
+                          document.querySelector('.section-cream:has(.countdown)');
+        
+        // Ищем секцию с таймером
+        var countdownContainer = document.querySelector('.countdown');
+        if (!countdownContainer) return;
 
-        timerSection.addEventListener('click', function(e) {
+        var clickTarget = countdownContainer.closest('.section');
+        if (!clickTarget) return;
+
+        clickTarget.style.cursor = 'pointer';
+
+        clickTarget.addEventListener('click', function(e) {
             createFirework(e.clientX, e.clientY);
         });
 
-        timerSection.addEventListener('touchend', function(e) {
+        clickTarget.addEventListener('touchend', function(e) {
             var touch = e.changedTouches[0];
             createFirework(touch.clientX, touch.clientY);
         });
@@ -198,23 +183,38 @@
         var container = document.getElementById('fireworkContainer');
         if (!container) return;
 
-        var colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF69B4','#C9A96E','#FF4500','#FFB6C1'];
-        var count = 35;
+        var colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF69B4','#C9A96E','#FF4500','#FFB6C1','#FF1493','#FFD700'];
+        var count = 40;
 
         for (var i = 0; i < count; i++) {
             var p = document.createElement('div');
             p.className = 'firework-particle';
             var angle = (Math.PI * 2 * i) / count;
-            var vel = 40 + Math.random() * 130;
+            var vel = 40 + Math.random() * 140;
             var tx = Math.cos(angle) * vel;
             var ty = Math.sin(angle) * vel;
-            var size = 3 + Math.random() * 7;
+            var size = 3 + Math.random() * 8;
             var color = colors[Math.floor(Math.random() * colors.length)];
 
             p.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:' + size + 'px;height:' + size + 'px;background:' + color + ';--tx:' + tx + 'px;--ty:' + ty + 'px;box-shadow:0 0 ' + (size*2) + 'px ' + color + ';';
             container.appendChild(p);
-            setTimeout(function() { p.remove(); }, 1300);
+            
+            setTimeout((function(el) { return function() { el.remove(); }; })(p), 1300);
         }
+
+        // Вторая волна искр
+        setTimeout(function() {
+            for (var j = 0; j < 25; j++) {
+                var spark = document.createElement('div');
+                spark.className = 'firework-particle';
+                var tx2 = (Math.random() - 0.5) * 200;
+                var ty2 = (Math.random() - 0.5) * 200;
+                
+                spark.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:4px;height:4px;background:#FFD700;--tx:' + tx2 + 'px;--ty:' + ty2 + 'px;box-shadow:0 0 10px #FFD700;';
+                container.appendChild(spark);
+                setTimeout((function(el) { return function() { el.remove(); }; })(spark), 1000);
+            }
+        }, 150);
     }
 
     function spawnConfetti(x, y, count) {
@@ -224,29 +224,31 @@
             c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
             c.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;font-size:' + (14+Math.random()*18) + 'px;pointer-events:none;z-index:99999;transition:all 1.4s ease-out;opacity:1;';
             document.body.appendChild(c);
-            requestAnimationFrame(function(el) {
+            
+            requestAnimationFrame((function(el) {
                 return function() {
                     el.style.transform = 'translate(' + ((Math.random()-0.5)*250) + 'px, -' + (Math.random()*180+80) + 'px) rotate(' + (Math.random()*720) + 'deg)';
                     el.style.opacity = '0';
                 };
-            }(c));
-            setTimeout(function(el) { return function() { el.remove(); }; }(c), 1400);
+            })(c));
+            
+            setTimeout((function(el) { return function() { el.remove(); }; })(c), 1400);
         }
     }
 
     /* ==========================================
-       7. ПАЛИТРА ДРЕСС-КОДА
+       6. ПАЛИТРА ДРЕСС-КОДА
        ========================================== */
     function initColorPalette() {
         var swatches = document.querySelectorAll('.color-swatch');
         var hint = document.getElementById('paletteHint');
 
         var tips = {
-            'Бордовый': '👗 Идеально для вечернего платья в пол или элегантного костюма с бабочкой',
-            'Винный': '👔 Шикарный цвет для классического образа. Добавьте золотые аксессуары!',
-            'Розовый': '🌸 Нежный образ для подружек невесты или романтичных гостей',
-            'Рубиновый': '💎 Роскошный глубокий оттенок. Для самых стильных гостей',
-            'Марсала': '🍷 Трендовый оттенок. Будете выглядеть как звезда красной дорожки!'
+            'Бордовый': '👗 Идеально для вечернего платья в пол или элегантного костюма с бабочкой. Выглядит дорого-богато!',
+            'Винный': '👔 Шикарный цвет для классического образа. Добавьте золотые аксессуары — и вы звезда вечера!',
+            'Розовый': '🌸 Нежный образ для подружек невесты или романтичных гостей. Милота обеспечена!',
+            'Рубиновый': '💎 Роскошный глубокий оттенок. Для тех, кто хочет выглядеть как голливудская звезда!',
+            'Марсала': '🍷 Трендовый оттенок сезона. Будете выглядеть так, будто только что с красной дорожки!'
         };
 
         swatches.forEach(function(s) {
@@ -255,14 +257,14 @@
                 this.classList.add('active');
                 var name = this.getAttribute('data-name');
                 if (hint && tips[name]) {
-                    hint.innerHTML = '<strong>' + name + '</strong><br><span style="font-size:13px">' + tips[name] + '</span>';
+                    hint.innerHTML = '<strong>' + name + '</strong><br><span style="font-size:14px;">' + tips[name] + '</span>';
                 }
             });
         });
     }
 
     /* ==========================================
-       8. ИГРА "СОБЕРИ БУКЕТ" (ПОЧИНЕНО!)
+       7. ИГРА "СОБЕРИ БУКЕТ" (ПОЛНОСТЬЮ РАБОЧАЯ)
        ========================================== */
     function initBouquetGame() {
         var field = document.getElementById('gameField');
@@ -275,7 +277,7 @@
         var score = 0;
         var active = true;
         var intervalId = null;
-        var flowers = ['🌸','🌺','🌷','🥀','💐','🌻','🌼','🌹','💮','🪻','🏵️','🌾'];
+        var flowers = ['🌸','🌺','🌷','🥀','💐','🌻','🌼','🌹','💮','🪻','🏵️','🌾','💠','🪷'];
 
         function start() {
             stopGame();
@@ -285,13 +287,13 @@
             bouquet.innerHTML = '';
             
             // Удаляем старые цветы
-            var old = field.querySelectorAll('.flower-item');
-            old.forEach(function(f) { f.remove(); });
+            var oldFlowers = field.querySelectorAll('.flower-item');
+            oldFlowers.forEach(function(f) { f.remove(); });
 
             intervalId = setInterval(function() {
                 if (!active) return;
                 spawnFlower();
-            }, 700);
+            }, 650);
         }
 
         function stopGame() {
@@ -306,8 +308,8 @@
             flower.className = 'flower-item';
             flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
             flower.style.left = (Math.random() * 80 + 10) + '%';
-            flower.style.top = '-40px';
-            flower.style.animationDuration = (3.5 + Math.random() * 3) + 's';
+            flower.style.top = '-50px';
+            flower.style.animationDuration = (3.5 + Math.random() * 3.5) + 's';
 
             // КЛИК ПО ЦВЕТКУ
             flower.addEventListener('click', function(e) {
@@ -320,20 +322,22 @@
                 // Добавляем в букет
                 var petal = document.createElement('span');
                 petal.textContent = this.textContent;
-                petal.style.animation = 'popIn 0.3s ease';
+                petal.style.display = 'inline-block';
+                petal.style.animation = 'popIn 0.3s ease forwards';
                 bouquet.appendChild(petal);
 
                 // Эффект сбора
                 this.style.transform = 'scale(2)';
                 this.style.opacity = '0';
                 this.style.transition = 'all 0.2s ease';
+                this.style.pointerEvents = 'none';
                 
                 var self = this;
                 setTimeout(function() { 
                     if (self.parentNode) self.remove(); 
                 }, 200);
 
-                // Бонусное сообщение
+                // Бонусное сообщение каждые 100 очков
                 if (score % 100 === 0 && score > 0) {
                     showBonus();
                 }
@@ -345,51 +349,74 @@
             var self = flower;
             setTimeout(function() {
                 if (self.parentNode) self.remove();
-            }, 7000);
+            }, 7500);
         }
 
         function showBonus() {
-            var msgs = ['🔥 Шикарный букет!', '⭐ Молодожёны в восторге!', '💝 Романтика!', '🎉 Свадебный букет!'];
+            var msgs = [
+                '🔥 Шикарный букет! Молодожёны плачут от счастья!',
+                '⭐ Да ты профессионал! Свадебный букет мечты!',
+                '💝 Романтика зашкаливает! Такой букет — просто пушка!',
+                '🎉 Свадебный букет чемпиона! Ты главный гость!',
+                '👑 Король/Королева цветов! Все в восторге!'
+            ];
+            
             var bonus = document.createElement('div');
             bonus.textContent = msgs[Math.floor(Math.random() * msgs.length)];
-            bonus.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;font-weight:700;color:var(--wine);pointer-events:none;z-index:20;animation:bonusPop 1.5s ease forwards;text-align:center;';
+            bonus.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;font-weight:700;color:var(--wine);pointer-events:none;z-index:20;animation:bonusPop 1.8s ease forwards;text-align:center;background:rgba(255,255,255,0.9);padding:12px 20px;border-radius:30px;box-shadow:0 4px 20px rgba(0,0,0,0.15);white-space:nowrap;';
             field.appendChild(bonus);
-            setTimeout(function() { bonus.remove(); }, 1500);
+            
+            setTimeout(function() { 
+                if (bonus.parentNode) bonus.remove(); 
+            }, 1800);
         }
 
         // Сброс игры
         if (resetBtn) {
-            resetBtn.addEventListener('click', start);
+            resetBtn.addEventListener('click', function() {
+                start();
+            });
         }
 
-        // Запуск
+        // Запуск игры
         start();
 
-        // Остановка когда секция не видна (оптимизация)
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    if (!active) start();
-                } else {
-                    active = false;
-                    stopGame();
-                }
-            });
-        }, { threshold: 0.2 });
-        observer.observe(field);
+        // Пауза игры когда секция не видна (оптимизация)
+        if (window.IntersectionObserver) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        if (!active) start();
+                    } else {
+                        active = false;
+                        stopGame();
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer.observe(field);
+        }
     }
 
-    // Добавляем стили для игры
-    var gameStyles = document.createElement('style');
-    gameStyles.textContent = '@keyframes popIn{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}@keyframes bonusPop{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}';
-    document.head.appendChild(gameStyles);
+    // Динамические стили для игры
+    var gameStyleEl = document.createElement('style');
+    gameStyleEl.textContent = 
+        '@keyframes popIn {' +
+            'from { transform: scale(0) rotate(-180deg); opacity: 0; }' +
+            'to { transform: scale(1) rotate(0deg); opacity: 1; }' +
+        '}' +
+        '@keyframes bonusPop {' +
+            '0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }' +
+            '40% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }' +
+            '100% { opacity: 0; transform: translate(-50%, -70%) scale(0.8); }' +
+        '}';
+    document.head.appendChild(gameStyleEl);
 
     /* ==========================================
-       9. ФОРМА ГОСТЯ (TELEGRAM)
+       8. ФОРМА ГОСТЯ — ОТПРАВКА В TELEGRAM
        ========================================== */
     function initGuestForm() {
         var form = document.getElementById('guestForm');
-        var success = document.getElementById('successMessage');
+        var successMsg = document.getElementById('successMessage');
 
         if (!form) return;
 
@@ -402,52 +429,58 @@
             var children = form.querySelector('[name="children"]');
             var wishes = form.querySelector('[name="wishes"]');
 
+            // Валидация
             if (!name || !name.value.trim()) {
-                shake(name);
+                shakeElement(name);
                 return;
             }
             if (!phone || !phone.value.trim()) {
-                shake(phone);
+                shakeElement(phone);
                 return;
             }
             if (!presence) {
-                alert('Выберите вариант присутствия 🙏');
+                alert('Пожалуйста, выберите вариант ответа 🤔\nСможете ли вы присутствовать?');
                 return;
             }
 
-            var btn = form.querySelector('button');
+            var btn = form.querySelector('button[type="submit"]');
             if (btn) {
                 btn.disabled = true;
                 btn.textContent = 'ОТПРАВЛЯЕТСЯ...';
             }
 
+            // Формируем сообщение для Telegram
             var msg = 
-                '🎉 *АНКЕТА ГОСТЯ*\n\n' +
+                '🎉 *АНКЕТА ГОСТЯ — СВАДЬБА МАШИ И СЕМЁНА*\n\n' +
                 '👤 *ФИО:* ' + name.value.trim() + '\n' +
-                '📱 *Тел:* ' + phone.value.trim() + '\n' +
-                '✅ *Буду:* ' + presence.value + '\n' +
+                '📱 *Телефон:* ' + phone.value.trim() + '\n' +
+                '✅ *Присутствие:* ' + presence.value + '\n' +
                 (children && children.value.trim() ? '👶 *Дети:* ' + children.value.trim() + '\n' : '') +
                 (wishes && wishes.value.trim() ? '💝 *Пожелания:* ' + wishes.value.trim() + '\n' : '') +
-                '\n───\n📅 ' + new Date().toLocaleDateString('ru-RU') + '\n💍 Свадьба Маши и Семёна | 6.09.2026';
+                '\n───\n' +
+                '📅 *Отправлено:* ' + new Date().toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) + '\n' +
+                '💍 *Свадьба:* 6 сентября 2026';
 
-            // Отправка в Telegram
-            // ЗАМЕНИТЕ НА СВОЙ ТОКЕН БОТА И CHAT ID
+            // Пытаемся отправить через Telegram Bot API
             sendToTelegram(msg, function(success) {
                 if (btn) {
                     btn.disabled = false;
                     btn.textContent = 'ОТПРАВИТЬ';
                 }
-                
+
                 if (success) {
+                    // Успешно отправлено через бота
                     form.style.display = 'none';
-                    if (success) success.style.display = 'block';
-                    spawnConfetti(window.innerWidth/2, window.innerHeight/2, 20);
+                    if (successMsg) successMsg.style.display = 'block';
+                    spawnConfetti(window.innerWidth/2, window.innerHeight/2, 25);
                 } else {
-                    // Fallback: открываем Telegram с текстом
+                    // Fallback: открываем Telegram с готовым текстом
                     var tgUrl = 'https://t.me/share/url?url=&text=' + encodeURIComponent(msg);
                     window.open(tgUrl, '_blank');
+                    
                     form.style.display = 'none';
-                    if (success) success.style.display = 'block';
+                    if (successMsg) successMsg.style.display = 'block';
+                    spawnConfetti(window.innerWidth/2, window.innerHeight/2, 15);
                 }
             });
 
@@ -456,12 +489,23 @@
     }
 
     function sendToTelegram(message, callback) {
-        // ЗАМЕНИТЕ НА РЕАЛЬНЫЕ ДАННЫЕ
-        var BOT_TOKEN = 'YOUR_BOT_TOKEN'; // Токен бота из @BotFather
-        var CHAT_ID = 'YOUR_CHAT_ID';     // Ваш chat_id
+        // ==========================================
+        // НАСТРОЙКА TELEGRAM БОТА
+        // ==========================================
+        // 1. Напишите @BotFather в Telegram
+        // 2. Создайте бота командой /newbot
+        // 3. Скопируйте токен и вставьте ниже
+        // 4. Напишите боту любое сообщение
+        // 5. Перейдите: https://api.telegram.org/bot<ТОКЕН>/getUpdates
+        // 6. Найдите свой chat_id и вставьте ниже
+        // ==========================================
+        
+        var BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // ЗАМЕНИТЕ НА ТОКЕН ВАШЕГО БОТА
+        var CHAT_ID = 'YOUR_CHAT_ID_HERE';     // ЗАМЕНИТЕ НА ВАШ CHAT ID
 
-        // Если токен не указан — просто открываем шаринг
-        if (BOT_TOKEN === 'YOUR_BOT_TOKEN') {
+        // Если токен не указан — сразу fallback
+        if (BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE' || CHAT_ID === 'YOUR_CHAT_ID_HERE') {
+            console.log('ℹ️ Telegram бот не настроен. Использую fallback (открытие Telegram).');
             callback(false);
             return;
         }
@@ -478,19 +522,26 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         })
-        .then(function(r) { return r.json(); })
+        .then(function(response) { return response.json(); })
         .then(function(json) {
-            callback(json.ok);
+            if (json.ok) {
+                console.log('✅ Анкета отправлена в Telegram!');
+                callback(true);
+            } else {
+                console.error('❌ Ошибка Telegram:', json.description);
+                callback(false);
+            }
         })
-        .catch(function() {
+        .catch(function(error) {
+            console.error('❌ Ошибка отправки:', error);
             callback(false);
         });
     }
 
-    function shake(el) {
+    function shakeElement(el) {
         if (!el) return;
         el.style.animation = 'shake 0.5s ease';
-        el.style.border = '2px solid red';
+        el.style.border = '2px solid #ff4444';
         el.focus();
         setTimeout(function() {
             el.style.animation = '';
@@ -498,12 +549,13 @@
         }, 500);
     }
 
-    var shakeCSS = document.createElement('style');
-    shakeCSS.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}';
-    document.head.appendChild(shakeCSS);
+    // Добавляем анимацию shake
+    var shakeStyle = document.createElement('style');
+    shakeStyle.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}';
+    document.head.appendChild(shakeStyle);
 
     /* ==========================================
-       10. ПЛАВНЫЙ СКРОЛЛ
+       9. ПЛАВНЫЙ СКРОЛЛ
        ========================================== */
     function initSmoothScroll() {
         document.addEventListener('click', function(e) {
@@ -511,6 +563,7 @@
             if (!link) return;
             var href = link.getAttribute('href');
             if (href === '#') return;
+            
             e.preventDefault();
             var target = document.querySelector(href);
             if (target) {
@@ -520,14 +573,38 @@
     }
 
     /* ==========================================
-       11. ПРИВЕТСТВИЕ В КОНСОЛИ
+       10. ПРИВЕТСТВИЕ В КОНСОЛИ (ПАСХАЛКИ)
        ========================================== */
     function showConsoleGreeting() {
-        console.log('%c💍 Свадьба Маши и Семёна %c| %c6 сентября 2026',
-            'font-size:18px;color:#8B0000;', '', 'font-size:14px;color:#C9A96E;');
-        console.log('%c🎮 Собери букет %c| %c🎆 Кликни на таймер %c| %c🌙 Переключи тему',
-            '', '', '', '', '');
-        console.log('%c💝 С любовью, Маша и Семён', 'font-style:italic;');
+        console.log('%c💍 %cСВАДЬБА МАШИ И СЕМЁНА %c💍',
+            'font-size:20px;', 'font-size:18px;color:#8B0000;font-weight:bold;', 'font-size:20px;');
+        console.log('%c📅 6 сентября 2026 | 📍 Волгоград, Советский район',
+            'font-size:14px;color:#C9A96E;');
+        console.log('');
+        console.log('%c🎮 %cСобери букет %c— кликай по цветам!',
+            '', 'font-weight:bold;', '');
+        console.log('%c🎆 %cКликни на таймер %c— будет салют!',
+            '', 'font-weight:bold;', '');
+        console.log('%c📝 %cЗаполни анкету %c— и мы тебя ждём!',
+            '', 'font-weight:bold;', '');
+        console.log('');
+        console.log('%c💝 С любовью, Маша и Семён %c🍪',
+            'font-style:italic;', '');
+        console.log('%cP.S. Торт будет. Обещаем.', 'color:#8B0000;');
+
+        // Секретная комбинация
+        var konami = [];
+        var secret = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight'];
+        
+        window.addEventListener('keydown', function(e) {
+            konami.push(e.key);
+            konami = konami.slice(-8);
+            
+            if (konami.join(',') === secret.join(',')) {
+                console.log('🎂🥂🍾 ТОРТ БУДЕТ! ЧЕСТНО-ЧЕСТНО! 🍾🥂🎂');
+                spawnConfetti(window.innerWidth/2, window.innerHeight/2, 50);
+            }
+        });
     }
 
 })();
